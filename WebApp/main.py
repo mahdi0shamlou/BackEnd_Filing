@@ -40,32 +40,32 @@ cache.init_app(app, config={
 
 @jwt.expired_token_loader
 def expired_token_callback(jwt_header, jwt_payload):
-    return render_template('errors/token_expired.html'), 401
+    return 401
 
 
 # Callback function for invalid token
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
-    return render_template('errors/token_expired.html'), 401
+    return 401
 
 
 # Callback function for unauthorized (missing token)
 @jwt.unauthorized_loader
 def unauthorized_callback(error):
-    return render_template('errors/token_expired.html'), 401
+    return 401
 
 
 @app.errorhandler(404)
 def not_found_error(error):
     # You can render a custom HTML template for the 404 error
-    return render_template('errors/e400.html'), 404
+    return 404
 
 
 # Custom error handler for 500 Internal Server Error
 @app.errorhandler(500)
 def internal_error(error):
     # This is also a place to clean up any resources if needed
-    return render_template('errors/e500.html'), 500
+    return 500
 
 
 if __name__ == '__main__':
