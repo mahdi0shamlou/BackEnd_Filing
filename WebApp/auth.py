@@ -24,10 +24,10 @@ def codesender(phone):
     # ذخیره کد در Redis با کلید شماره تلفن
     redis_client.set(phone, code, ex=300)  # کد به مدت 5 دقیقه (300 ثانیه) معتبر است
 
-    api = KavenegarAPI('66765175557259455153354358533233384E4A6B75535141797250697644616A69637538763243726535513D')
+    api = KavenegarAPI('2B393856314B72454C624855696979686A4F574D416A766B366444674A364149554E6A69393452747965513D')
     params = {
         'receptor': phone,
-        'template': 'otp',
+        'template': 'verify',
         'token': code,
         'type': 'sms'
     }
