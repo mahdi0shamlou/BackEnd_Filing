@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from flask_jwt_extended import JWTManager
 import configparser
-import redis
+#import redis
 from models import db
 from cache import cache
 #-----------------
@@ -29,7 +29,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 db.init_app(app)
 jwt = JWTManager(app)
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+#redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 cache.init_app(app, config={
     'CACHE_TYPE': 'redis',
