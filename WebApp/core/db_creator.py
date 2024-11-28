@@ -146,7 +146,7 @@ class DatabaseManager:
             city_id BIGINT(20) UNSIGNED NOT NULL,
             date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
-            FOREIGN KEY (city_id) REFERENCES Cities(id) ON DELETE CASCADE,
+            FOREIGN KEY (city_id) REFERENCES Cities(id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         """
         self.cursor.execute(create_table_query)
@@ -161,7 +161,7 @@ class DatabaseManager:
             date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             FOREIGN KEY (neighborhoods_id) REFERENCES Neighborhoods(id) ON DELETE CASCADE,
-            FOREIGN KEY (city_id) REFERENCES Cities(id) ON DELETE CASCADE,
+            FOREIGN KEY (city_id) REFERENCES Cities(id) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         """
         self.cursor.execute(create_table_query)
