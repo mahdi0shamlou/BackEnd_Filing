@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.mysql import TINYINT
 import datetime
 
 db = SQLAlchemy()
@@ -14,3 +15,64 @@ class users(db.Model):
     email = db.Column(db.String(191), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now())
+
+class PostFileSell(db.Model):
+    __tablename__ = 'PostFileSell'
+    id = db.Column(db.BigInteger, primary_key=True)
+    token = db.Column(db.String(191), unique=True, nullable=False)
+    number = db.Column(db.String(191), nullable=False)
+    city = db.Column(db.BigInteger, nullable=False)
+    city_text = db.Column(db.String(191), nullable=False)
+    mahal = db.Column(db.BigInteger, nullable=False)
+    mahal_text = db.Column(db.String(191), nullable=False)
+    type = db.Column(db.BigInteger, nullable=False)
+    title = db.Column(db.String(191), nullable=False)
+    price = db.Column(db.BigInteger, nullable=False)
+    meter = db.Column(db.BigInteger, nullable=False)
+    desck = db.Column(db.Text)
+    map = db.Column(db.Text)
+    details = db.Column(db.Text)
+    GROUP_INFO_ROW = db.Column(db.Text)
+    UNEXPANDABLE_ROW = db.Column(db.Text)
+    GROUP_FEATURE_ROW = db.Column(db.Text)
+    GROUP_FEATURE_ROW_items = db.Column(db.Text)
+    GROUP_FEATURE_ROW_more_details = db.Column(db.Text)
+    Images = db.Column(db.Text)
+    Otagh = db.Column(TINYINT(unsigned=True))
+    Make_years = db.Column(db.BigInteger)
+    PARKING = db.Column(db.Boolean, default=False)
+    ELEVATOR = db.Column(db.Boolean, default=False)
+    CABINET = db.Column(db.Boolean, default=False)
+    date_created_persian = db.Column(db.String(20))
+    date_created = db.Column(db.DateTime, default= datetime.datetime.now())  # Use datetime.utcnow for default value
+
+class PostFileRent(db.Model):
+    __tablename__ = 'PostFileRent'
+    id = db.Column(db.BigInteger, primary_key=True)
+    token = db.Column(db.String(191), unique=True, nullable=False)
+    number = db.Column(db.String(191), nullable=False)
+    city = db.Column(db.BigInteger, nullable=False)
+    city_text = db.Column(db.String(191), nullable=False)
+    mahal = db.Column(db.BigInteger, nullable=False)
+    mahal_text = db.Column(db.String(191), nullable=False)
+    type = db.Column(db.BigInteger, nullable=False)
+    title = db.Column(db.String(191), nullable=False)
+    price = db.Column(db.BigInteger, nullable=False)
+    rent = db.Column(db.BigInteger, nullable=False)
+    meter = db.Column(db.BigInteger, nullable=False)
+    desck = db.Column(db.Text)
+    map = db.Column(db.Text)
+    details = db.Column(db.Text)
+    GROUP_INFO_ROW = db.Column(db.Text)
+    UNEXPANDABLE_ROW = db.Column(db.Text)
+    GROUP_FEATURE_ROW = db.Column(db.Text)
+    GROUP_FEATURE_ROW_items = db.Column(db.Text)
+    GROUP_FEATURE_ROW_more_details = db.Column(db.Text)
+    Images = db.Column(db.Text)
+    Otagh = db.Column(TINYINT(unsigned=True))
+    Make_years = db.Column(db.BigInteger)
+    PARKING = db.Column(db.Boolean, default=False)
+    ELEVATOR = db.Column(db.Boolean, default=False)
+    CABINET = db.Column(db.Boolean, default=False)
+    date_created_persian = db.Column(db.String(20))
+    date_created = db.Column(db.DateTime, default=datetime.datetime.now())  # Use datetime.utcnow for default value
