@@ -7,7 +7,6 @@ from models import users as Users
 from models import PostFileSell, PostFileRent
 #---------------
 
-
 searchenign_bp = Blueprint('searchenign', __name__)
 
 def check_user_has_accses(user, mahal):
@@ -18,8 +17,10 @@ def check_user_has_accses(user, mahal):
 @searchenign_bp.route('/Search', methods=['GET'])
 @jwt_required()
 def searhc_file():
-    data = request.form
-    mahal = data.get('mahal')
+
+    type_of_search = request.form.get('type', 1, type=int)
+    city = request.form.get('city', 1, type=int)
+    mahal = request.form.get('mahal', 1, type=int)
 
     current_user = get_jwt_identity()
     user_phone = current_user['phone']

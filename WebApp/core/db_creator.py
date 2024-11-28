@@ -126,7 +126,49 @@ class DatabaseManager:
         #----------------------------
         #---------- End files table
         # ----------------------------
-
+        #----------------------------
+        #---------- Create Cities and Mahal table
+        # ----------------------------
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS Cities (
+            id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            name VARCHAR(191) NOT NULL UNIQUE,
+            date_created DATETIME DEFAULT CURRENT_TIMESTAMP, 
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS Neighborhoods (
+            id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            name VARCHAR(191) NOT NULL UNIQUE,
+            city_id BIGINT(20) UNSIGNED NOT NULL,
+            date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            FOREIGN KEY (city_id) REFERENCES Cities(id) ON DELETE CASCADE,
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS Neighborhoods_For_Scrapper (
+            id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            name VARCHAR(191) NOT NULL UNIQUE,
+            scrapper_id BIGINT(20) UNSIGNED NOT NULL,            
+            neighborhoods_id BIGINT(20) UNSIGNED NOT NULL,
+            city_id BIGINT(20) UNSIGNED NOT NULL,
+            date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            FOREIGN KEY (neighborhoods_id) REFERENCES Neighborhoods(id) ON DELETE CASCADE,
+            FOREIGN KEY (city_id) REFERENCES Cities(id) ON DELETE CASCADE,
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+        #----------------------------
+        #---------- End Cities and Mahal table
+        # ----------------------------
 
 
     def close(self):
