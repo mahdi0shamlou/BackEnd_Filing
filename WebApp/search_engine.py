@@ -1,13 +1,10 @@
 from flask import request, Blueprint, jsonify
-import datetime
 #-------------jwt tokens
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from numpy.array_api import trunc
-
 #-------------
 #------------- models
 from models import users as Users
-from models import db
+from models import PostFileSell, PostFileRent
 #---------------
 
 
@@ -18,7 +15,7 @@ def check_user_has_accses(user, mahal):
     print(mahal)
     return True
 
-@searchenign_bp.route('/Search', methods=['POST'])
+@searchenign_bp.route('/Search', methods=['GET'])
 @jwt_required()
 def searhc_file():
     data = request.form
@@ -34,5 +31,5 @@ def searhc_file():
     if check_accses:
         pass
     else:
-        pass
+        return jsonify({"message": "شما به این منطقه دسترسی ندارید ."}), 403
 
