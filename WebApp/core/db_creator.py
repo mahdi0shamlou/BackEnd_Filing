@@ -69,6 +69,7 @@ class DatabaseManager:
         create_table_query = """
         CREATE TABLE IF NOT EXISTS PostFileSell (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            status INT NOT NULL,
             token VARCHAR(191) NOT NULL UNIQUE,
             number VARCHAR(191) NOT NULL,
             city  BIGINT(3) NOT NULL,
@@ -97,6 +98,7 @@ class DatabaseManager:
         create_table_query = """
         CREATE TABLE IF NOT EXISTS PostFileRent (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            status INT NOT NULL,
             token VARCHAR(191) NOT NULL UNIQUE,
             number VARCHAR(191) NOT NULL,
             city  BIGINT(3) NOT NULL,
