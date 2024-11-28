@@ -29,7 +29,9 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_recycle": 1800         # Recycle connections every 1800 seconds (30 minutes)
 }
 # Initialize CORS to allow requests from all origins
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization"]}})
+#CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization"]}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization", "Content-Type"], "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"]}})
+
 db.init_app(app)
 jwt = JWTManager(app)
 #redis_client = redis.Redis(host='localhost', port=6379, db=0)
