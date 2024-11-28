@@ -72,9 +72,9 @@ class DatabaseManager:
             status INT NOT NULL,
             token VARCHAR(191) NOT NULL UNIQUE,
             number VARCHAR(191) NOT NULL,
-            city  BIGINT(20) NOT NULL,
+            city  BIGINT(3) NOT NULL,
             city_text  VARCHAR(191) NOT NULL,
-            mahal  BIGINT(20) NOT NULL,
+            mahal  BIGINT(5) NOT NULL,
             mahal_text  VARCHAR(191) NOT NULL,
             type BIGINT(3) NOT NULL,
             title VARCHAR(191) NOT NULL,
@@ -90,8 +90,6 @@ class DatabaseManager:
             CABINET BOOLEAN DEFAULT FALSE,
             date_created_persian VARCHAR(20),
             date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (mahal) REFERENCES Neighborhoods(id) ON DELETE CASCADE,
-            FOREIGN KEY (city) REFERENCES Cities(id) ON DELETE CASCADE,
             PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         """
@@ -103,9 +101,9 @@ class DatabaseManager:
             status INT NOT NULL,
             token VARCHAR(191) NOT NULL UNIQUE,
             number VARCHAR(191) NOT NULL,
-            city  BIGINT(20) NOT NULL,
+            city  BIGINT(3) NOT NULL,
             city_text  VARCHAR(191) NOT NULL,
-            mahal  BIGINT(20) NOT NULL,
+            mahal  BIGINT(5) NOT NULL,
             mahal_text  VARCHAR(191) NOT NULL,
             type BIGINT(3) NOT NULL,
             title VARCHAR(191) NOT NULL,
@@ -122,8 +120,6 @@ class DatabaseManager:
             CABINET BOOLEAN DEFAULT FALSE,
             date_created_persian VARCHAR(20),
             date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (mahal) REFERENCES Neighborhoods(id) ON DELETE CASCADE,
-            FOREIGN KEY (city) REFERENCES Cities(id) ON DELETE CASCADE,
             PRIMARY KEY (id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         """
