@@ -41,6 +41,9 @@ class DatabaseManager:
                 print(err)
 
     def create_users_table(self):
+        #----------------------------
+        #---------- create Users table
+        # ----------------------------
         create_table_query = """
         CREATE TABLE IF NOT EXISTS users (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -57,6 +60,74 @@ class DatabaseManager:
         """
         self.cursor.execute(create_table_query)
         self.connection.commit()
+        #----------------------------
+        #---------- End Users table
+        # ----------------------------
+        #----------------------------
+        #---------- Creates files table
+        # ----------------------------
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS PostFileSell (
+            id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            token VARCHAR(191) NOT NULL UNIQUE,
+            number VARCHAR(191) NOT NULL,
+            city  BIGINT(3) NOT NULL,
+            city_text  VARCHAR(191) NOT NULL,
+            mahal  BIGINT(3) NOT NULL,
+            mahal_text  VARCHAR(191) NOT NULL,
+            type BIGINT(3) NOT NULL,
+            title VARCHAR(191) NOT NULL,
+            price BIGINT(30) NOT NULL,
+            meter BIGINT(30) NOT NULL,
+            desck TEXT,
+            map TEXT,
+            Images TEXT,
+            Otagh TINYINT UNSIGNED,
+            Make_years BIGINT(5),
+            PARKING BOOLEAN DEFAULT FALSE,
+            ELEVATOR BOOLEAN DEFAULT FALSE,
+            CABINET BOOLEAN DEFAULT FALSE,
+            date_created_persian VARCHAR(20),
+            date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS PostFileRent (
+            id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            token VARCHAR(191) NOT NULL UNIQUE,
+            number VARCHAR(191) NOT NULL,
+            city  BIGINT(3) NOT NULL,
+            city_text  VARCHAR(191) NOT NULL,
+            mahal  BIGINT(3) NOT NULL,
+            mahal_text  VARCHAR(191) NOT NULL,
+            type BIGINT(3) NOT NULL,
+            title VARCHAR(191) NOT NULL,
+            price BIGINT(30) NOT NULL,
+            rent BIGINT(30) NOT NULL,
+            meter BIGINT(30) NOT NULL,
+            desck TEXT,
+            map TEXT,
+            Images TEXT,
+            Otagh TINYINT UNSIGNED,
+            Make_years BIGINT(5),
+            PARKING BOOLEAN DEFAULT FALSE,
+            ELEVATOR BOOLEAN DEFAULT FALSE,
+            CABINET BOOLEAN DEFAULT FALSE,
+            date_created_persian VARCHAR(20),
+            date_created DATETIME DEFAULT CURRENT_TIMESTAMP, 
+            PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+        #----------------------------
+        #---------- End files table
+        # ----------------------------
+
+
 
     def close(self):
         self.cursor.close()
