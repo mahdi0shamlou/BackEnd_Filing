@@ -30,7 +30,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 # Initialize CORS to allow requests from all origins
 #CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization"]}})
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization", "Content-Type"], "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"]}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization", "Content-Type"], "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE", "PATHC"]}})
 
 db.init_app(app)
 jwt = JWTManager(app)
@@ -83,7 +83,7 @@ def internal_error(error):
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', '*')  # Or specify your frontend domain here
     response.headers.add('Access-Control-Allow-Headers', 'Authorization, Content-Type')
-    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATHC')
     return response
 
 if __name__ == '__main__':
