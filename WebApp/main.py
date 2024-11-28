@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 import configparser
 #import redis
 from models import db
@@ -27,6 +28,8 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_timeout": 20,          # Wait up to 20 seconds before timeout
     "pool_recycle": 1800         # Recycle connections every 1800 seconds (30 minutes)
 }
+# Initialize CORS to allow requests from all origins
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization"]}})
 db.init_app(app)
 jwt = JWTManager(app)
 #redis_client = redis.Redis(host='localhost', port=6379, db=0)
