@@ -79,6 +79,13 @@ def internal_error(error):
     return 500
 
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')  # Or specify your frontend domain here
+    response.headers.add('Access-Control-Allow-Headers', 'Authorization, Content-Type')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
+    return response
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Create SQL tables for our data models
