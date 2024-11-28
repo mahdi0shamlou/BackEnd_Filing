@@ -142,7 +142,7 @@ class DatabaseManager:
         create_table_query = """
         CREATE TABLE IF NOT EXISTS Neighborhoods (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            name VARCHAR(191) NOT NULL UNIQUE,
+            name VARCHAR(191) NOT NULL,
             city_id BIGINT(20) UNSIGNED NOT NULL,
             date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
@@ -154,7 +154,7 @@ class DatabaseManager:
         create_table_query = """
         CREATE TABLE IF NOT EXISTS Neighborhoods_For_Scrapper (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            name VARCHAR(191) NOT NULL UNIQUE,
+            name VARCHAR(191) NOT NULL,
             scrapper_id BIGINT(20) UNSIGNED NOT NULL,            
             neighborhoods_id BIGINT(20) UNSIGNED NOT NULL,
             city_id BIGINT(20) UNSIGNED NOT NULL,
