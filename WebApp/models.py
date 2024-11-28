@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from pydantic_core.core_schema import nullable_schema
 from sqlalchemy.dialects.mysql import TINYINT
 import datetime
 
@@ -19,6 +20,7 @@ class users(db.Model):
 class PostFileSell(db.Model):
     __tablename__ = 'PostFileSell'
     id = db.Column(db.BigInteger, primary_key=True)
+    status = db.Column(db.Integer, nullable=False)
     token = db.Column(db.String(191), unique=True, nullable=False)
     number = db.Column(db.String(191), nullable=False)
     city = db.Column(db.BigInteger, nullable=False)
@@ -43,6 +45,7 @@ class PostFileSell(db.Model):
 class PostFileRent(db.Model):
     __tablename__ = 'PostFileRent'
     id = db.Column(db.BigInteger, primary_key=True)
+    status = db.Column(db.Integer, nullable=False)
     token = db.Column(db.String(191), unique=True, nullable=False)
     number = db.Column(db.String(191), nullable=False)
     city = db.Column(db.BigInteger, nullable=False)
