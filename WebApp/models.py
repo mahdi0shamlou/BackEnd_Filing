@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from pydantic_core.core_schema import nullable_schema
 from sqlalchemy.dialects.mysql import TINYINT
 import datetime
 
