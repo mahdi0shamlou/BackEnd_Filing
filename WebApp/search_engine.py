@@ -29,7 +29,7 @@ def searhc_file():
 
     check_accses = check_user_has_accses(user, mahal)
     if check_accses:
-        pass
+        return jsonify({"message": "فایلینگ"}), 200
     else:
         return jsonify({"message": "شما به این منطقه دسترسی ندارید ."}), 403
 
