@@ -4,3 +4,4 @@ flask_jwt_extended
 flask_sqlalchemy
 kavenegar
 flask_caching
+flask-cors
