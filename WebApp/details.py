@@ -44,7 +44,7 @@ def details_file():
                         'mahal': query.mahal_text,
                         'meter': query.meter,
                         'token': query.token,
-                        'desck': query.desck[:30]
+                        'desck': query.desck
                     }]
 
                     response_data = {
@@ -55,7 +55,7 @@ def details_file():
                     return jsonify(response_data)
                 except Exception as e:
                     print(e)  # Log the error
-                    return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
+                    return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره تلاش کنید !', 'message': str(e)}), 500
             else:
                 return jsonify({"message": "شما به این فایل دسترسی ندارید ."}), 403
         else:
@@ -79,7 +79,7 @@ def details_file():
                         'mahal': query.mahal_text,
                         'meter': query.meter,
                         'token': query.token,
-                        'desck': query.desck[:30]
+                        'desck': query.desck
                     }]
 
                     response_data = {
@@ -89,7 +89,7 @@ def details_file():
                     return jsonify(response_data)
                 except Exception as e:
                     print(e)  # Log the error
-                    return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
+                    return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره تلاش کنید !', 'message': str(e)}), 500
             else:
                 return jsonify({"message": "شما به این فایل دسترسی ندارید ."}), 403
 
