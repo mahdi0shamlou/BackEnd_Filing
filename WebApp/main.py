@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import configparser
+from flask import jsonify
 #import redis
 from models import db
 from cache import cache
@@ -53,8 +54,6 @@ app.register_blueprint(searchenign_bp)
 app.register_blueprint(details_bp)
 
 
-from flask import jsonify
-
 @jwt.expired_token_loader
 def expired_token_callback(jwt_header, jwt_payload):
     return jsonify({
@@ -66,7 +65,7 @@ def expired_token_callback(jwt_header, jwt_payload):
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
     return jsonify({
-        'status': 401,
+        'status': 402,
         'sub_status': 'توکن ارسال شده مشکل دارد !',
         'message': 'توکن ارسال شده مشکل دارد !'
     }), 401
@@ -74,7 +73,7 @@ def invalid_token_callback(error):
 @jwt.unauthorized_loader
 def unauthorized_callback(error):
     return jsonify({
-        'status': 401,
+        'status': 400,
         'sub_status': 'توکن ارسال نشده است !',
         'message': 'توکن ارسال نشده است !'
     }), 401
