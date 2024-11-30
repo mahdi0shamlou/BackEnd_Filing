@@ -9,6 +9,7 @@ from cache import cache
 from auth import auth_bp
 from profile import profile_bp
 from search_engine import searchenign_bp
+from details import
 #-----------------
 
 

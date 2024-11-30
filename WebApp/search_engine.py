@@ -159,12 +159,6 @@ def search_engine():
                         }
                     }
 
-                    from sqlalchemy.dialects import postgresql
-
-                    sql_query_string = str(
-                        query.statement.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
-
-                    print(sql_query_string)
 
                     return jsonify(response_data)
                 except Exception as e:
