@@ -176,7 +176,7 @@ def search_engine():
             if check_accses:
                 try:
                     city = request_data.get('city', 1)
-                    post_type = request_data.get('type', 11)  # Renamed 'type' to 'post_type'
+                    post_type = request_data.get('type', 21)  # Renamed 'type' to 'post_type'
                     mahals = request_data.get('mahal', [])
                     price_from = request_data.get('price_from', None)
                     price_to = request_data.get('price_to', None)
