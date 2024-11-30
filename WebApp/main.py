@@ -59,24 +59,24 @@ from flask import jsonify
 def expired_token_callback(jwt_header, jwt_payload):
     return jsonify({
         'status': 401,
-        'sub_status': 'expired_token',
-        'message': 'Token has expired'
+        'sub_status': 'توکن منقضی شده است !',
+        'message': 'توکن منقضی شده است !'
     }), 401
 
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
     return jsonify({
         'status': 401,
-        'sub_status': 'invalid_token',
-        'message': 'Token is invalid'
+        'sub_status': 'توکن ارسال شده مشکل دارد !',
+        'message': 'توکن ارسال شده مشکل دارد !'
     }), 401
 
 @jwt.unauthorized_loader
 def unauthorized_callback(error):
     return jsonify({
         'status': 401,
-        'sub_status': 'missing_token',
-        'message': 'Token is missing'
+        'sub_status': 'توکن ارسال نشده است !',
+        'message': 'توکن ارسال نشده است !'
     }), 401
 
 
