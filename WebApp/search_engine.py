@@ -180,6 +180,8 @@ def search_engine():
                     mahals = request_data.get('mahal', [])
                     price_from = request_data.get('price_from', None)
                     price_to = request_data.get('price_to', None)
+                    rent_from = request_data.get('rent_from', None)
+                    rent_to = request_data.get('rent_to', None)
                     meter_from = request_data.get('meter_from', None)
                     meter_to = request_data.get('meter_to', None)
                     sort_from = request_data.get('sort', 1)
@@ -189,91 +191,100 @@ def search_engine():
                     desck = request_data.get('desck', None)
 
                     # Start with the base query and replace filter_by() with filter()
-                    query = PostFileSell.query.filter(PostFileSell.city == city)
-                    query = query.filter(PostFileSell.status == 1)
+                    query = PostFileRent.query.filter(PostFileRent.city == city)
+                    query = query.filter(PostFileRent.status == 1)
+
                     if post_type is not None:
-                        query = query.filter(PostFileSell.type == post_type)
+                        query = query.filter(PostFileRent.type == post_type)
 
                     if mahals:
-                        query = query.filter(PostFileSell.mahal.in_(mahals))  # Filter by mahal list
+                        query = query.filter(PostFileRent.mahal.in_(mahals))  # Filter by mahal list
 
                     if price_from is not None and price_to is not None:
-                        query = query.filter(PostFileSell.price.between(price_from, price_to))
+                        query = query.filter(PostFileRent.price.between(price_from, price_to))
                     elif price_from is not None:
-                        query = query.filter(PostFileSell.price >= price_from)
+                        query = query.filter(PostFileRent.price >= price_from)
                     elif price_to is not None:
-                        query = query.filter(PostFileSell.price <= price_to)
+                        query = query.filter(PostFileRent.price <= price_to)
+
+                    if rent_from is not None and rent_to is not None:
+                        query = query.filter(PostFileRent.rent.between(rent_from, rent_to))
+                    elif rent_from is not None:
+                        query = query.filter(PostFileRent.rent >= rent_from)
+                    elif rent_to is not None:
+                        query = query.filter(PostFileRent.rent <= rent_to)
+
 
                     if meter_from is not None and meter_to is not None:
-                        query = query.filter(PostFileSell.meter.between(meter_from, meter_to))
+                        query = query.filter(PostFileRent.meter.between(meter_from, meter_to))
                     elif meter_from is not None:
-                        query = query.filter(PostFileSell.meter >= meter_from)
+                        query = query.filter(PostFileRent.meter >= meter_from)
                     elif meter_to is not None:
-                        query = query.filter(PostFileSell.meter <= meter_to)
+                        query = query.filter(PostFileRent.meter <= meter_to)
 
                     if otagh is not None:
                         if otagh != -1:
-                            query = query.filter(PostFileSell.Otagh == otagh)
+                            query = query.filter(PostFileRent.Otagh == otagh)
 
                     if make:
                         if -1 not in make:
-                            query = query.filter(PostFileSell.Make_years.in_(make[:4]))
+                            query = query.filter(PostFileRent.Make_years.in_(make[:4]))
 
                     if 'parking' in request_data:
-                        query = query.filter(PostFileSell.PARKING == True)
+                        query = query.filter(PostFileRent.PARKING == True)
 
                     if 'cabinet' in request_data:
-                        query = query.filter(PostFileSell.CABINET == True)
+                        query = query.filter(PostFileRent.CABINET == True)
 
                     if 'elevator' in request_data:
-                        query = query.filter(PostFileSell.ELEVATOR == True)
+                        query = query.filter(PostFileRent.ELEVATOR == True)
 
                     if desck is not None:
                         query = query.filter(or_(
-                            PostFileSell.desck.ilike(f'%{desck}%'),
-                            PostFileSell.title.ilike(f'%{desck}%')
+                            PostFileRent.desck.ilike(f'%{desck}%'),
+                            PostFileRent.title.ilike(f'%{desck}%')
                         ))
 
                     per_page = 12
 
                     # Handle sorting logic
                     if sort_from == 2:
-                        posts_pagination = query.order_by(PostFileSell.id.asc()).paginate(page=page, per_page=per_page,
+                        posts_pagination = query.order_by(PostFileRent.id.asc()).paginate(page=page, per_page=per_page,
                                                                                           error_out=False)
                     elif sort_from == 3:
-                        posts_pagination = query.order_by(PostFileSell.price.desc()).paginate(page=page,
+                        posts_pagination = query.order_by(PostFileRent.price.desc()).paginate(page=page,
                                                                                               per_page=per_page,
                                                                                               error_out=False)
                     elif sort_from == 4:
-                        posts_pagination = query.order_by(PostFileSell.price.asc()).paginate(page=page,
+                        posts_pagination = query.order_by(PostFileRent.price.asc()).paginate(page=page,
                                                                                              per_page=per_page,
                                                                                              error_out=False)
                     elif sort_from == 5:
-                        posts_pagination = query.order_by(PostFileSell.meter.desc()).paginate(page=page,
+                        posts_pagination = query.order_by(PostFileRent.meter.desc()).paginate(page=page,
                                                                                               per_page=per_page,
                                                                                               error_out=False)
                     elif sort_from == 6:
-                        posts_pagination = query.order_by(PostFileSell.meter.asc()).paginate(page=page,
+                        posts_pagination = query.order_by(PostFileRent.meter.asc()).paginate(page=page,
                                                                                              per_page=per_page,
                                                                                              error_out=False)
                     elif sort_from == 9:
-                        posts_pagination = query.order_by(PostFileSell.Otagh.desc()).paginate(page=page,
+                        posts_pagination = query.order_by(PostFileRent.Otagh.desc()).paginate(page=page,
                                                                                               per_page=per_page,
                                                                                               error_out=False)
                     elif sort_from == 10:
-                        posts_pagination = query.order_by(PostFileSell.Otagh.asc()).paginate(page=page,
+                        posts_pagination = query.order_by(PostFileRent.Otagh.asc()).paginate(page=page,
                                                                                              per_page=per_page,
                                                                                              error_out=False)
                     elif sort_from == 11:
-                        posts_pagination = query.order_by(PostFileSell.Make_years.desc()).paginate(page=page,
+                        posts_pagination = query.order_by(PostFileRent.Make_years.desc()).paginate(page=page,
                                                                                                    per_page=per_page,
                                                                                                    error_out=False)
                     elif sort_from == 12:
-                        posts_pagination = query.order_by(PostFileSell.Make_years.asc()).paginate(page=page,
+                        posts_pagination = query.order_by(PostFileRent.Make_years.asc()).paginate(page=page,
                                                                                                   per_page=per_page,
                                                                                                   error_out=False)
                     else:
-                        posts_pagination = query.order_by(PostFileSell.id.desc()).paginate(page=page, per_page=per_page,
+                        posts_pagination = query.order_by(PostFileRent.id.desc()).paginate(page=page, per_page=per_page,
                                                                                            error_out=False)
 
                     posts = posts_pagination.items
@@ -285,6 +296,7 @@ def search_engine():
                         'title': post.title,
                         'city': post.city_text,
                         'price': post.price,
+                        'rent': post.rent,
                         'mahal': post.mahal_text,
                         'meter': post.meter,
                         'token': post.token,
@@ -308,6 +320,7 @@ def search_engine():
                     return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
             else:
                 return jsonify({"message": "شما به این منطقه دسترسی ندارید ."}), 403
+
     except Exception as e:
         print(e)
         return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
