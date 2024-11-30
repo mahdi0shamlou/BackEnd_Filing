@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 # Initialize CORS to allow requests from all origins
 #CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization"]}})
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization", "Content-Type"], "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE", "PATHC"]}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "allow_headers": ["Authorization", "Content-Type"], "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE", "PATCH"]}})
 
 db.init_app(app)
 jwt = JWTManager(app)
@@ -53,21 +53,31 @@ app.register_blueprint(searchenign_bp)
 app.register_blueprint(details_bp)
 
 
+from flask import jsonify
+
 @jwt.expired_token_loader
 def expired_token_callback(jwt_header, jwt_payload):
-    return 401
+    return jsonify({
+        'status': 401,
+        'sub_status': 'expired_token',
+        'message': 'Token has expired'
+    }), 401
 
-
-# Callback function for invalid token
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
-    return 401
+    return jsonify({
+        'status': 401,
+        'sub_status': 'invalid_token',
+        'message': 'Token is invalid'
+    }), 401
 
-
-# Callback function for unauthorized (missing token)
 @jwt.unauthorized_loader
 def unauthorized_callback(error):
-    return 401
+    return jsonify({
+        'status': 401,
+        'sub_status': 'missing_token',
+        'message': 'Token is missing'
+    }), 401
 
 
 @app.errorhandler(404)
@@ -75,12 +85,12 @@ def not_found_error(error):
     # You can render a custom HTML template for the 404 error
     return 404
 
-
 # Custom error handler for 500 Internal Server Error
 @app.errorhandler(500)
 def internal_error(error):
     # This is also a place to clean up any resources if needed
     return 500
+
 
 
 @app.after_request

@@ -92,7 +92,6 @@ def details_file():
                     return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره تلاش کنید !', 'message': str(e)}), 500
             else:
                 return jsonify({"message": "شما به این فایل دسترسی ندارید ."}), 403
-
     except Exception as e:
         print(e)
         return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
