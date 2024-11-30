@@ -9,7 +9,7 @@ from cache import cache
 from auth import auth_bp
 from profile import profile_bp
 from search_engine import searchenign_bp
-from details import
+from details import details_bp
 #-----------------
 
 
@@ -50,6 +50,7 @@ cache.init_app(app, config={
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(searchenign_bp)
+app.register_blueprint(details_bp)
 
 
 @jwt.expired_token_loader
