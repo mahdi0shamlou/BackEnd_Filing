@@ -24,7 +24,7 @@ def search_engine():
         request_data = request.get_json()
 
         # Default values, can be overridden by JSON body
-        is_sell = request_data.get('type_files', 1)
+        is_sell = request_data.get('type_file', 1)
         if is_sell == 1:
             current_user = get_jwt_identity()
             user_phone = current_user['phone']
@@ -138,6 +138,7 @@ def search_engine():
 
                     # Build a list of post details to send in the response
                     posts_list = [{
+                        'type_file': is_sell,
                         'id': post.id,
                         'title': post.title,
                         'city': post.city_text,
