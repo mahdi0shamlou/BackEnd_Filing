@@ -76,5 +76,8 @@ class PostFileRent(db.Model):
     PARKING = db.Column(db.Boolean, default=False)
     ELEVATOR = db.Column(db.Boolean, default=False)
     CABINET = db.Column(db.Boolean, default=False)
+    # dict data
+    details = db.Column(db.Text)
+    #date
     date_created_persian = db.Column(db.String(20))
     date_created = db.Column(db.DateTime, default=datetime.datetime.now())  # Use datetime.utcnow for default value
