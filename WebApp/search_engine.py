@@ -40,7 +40,6 @@ def search_engine():
                     price_to = request_data.get('price_to', None)
                     meter_from = request_data.get('meter_from', None)
                     meter_to = request_data.get('meter_to', None)
-                    sort_from = request_data.get('sort', 1)
                     page = request_data.get('page', 1)
                     otagh = request_data.get('otagh', None)
                     make = request_data.get('make', [])
