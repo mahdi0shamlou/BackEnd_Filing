@@ -33,8 +33,8 @@ def search_engine():
             check_accses = check_user_has_accses(user, 0)
             if check_accses:
                 try:
-                    city = request_data.get('city', 1)
-                    post_type = request_data.get('type', 11)  # Renamed 'type' to 'post_type'
+                    city = request_data.get('city', 1) # 1 ,2 , 3, 4, 5, 6
+                    post_type = request_data.get('type', 11)  # 11 , 12, 13, 14
                     mahals = request_data.get('mahal', [])
                     price_from = request_data.get('price_from', None)
                     price_to = request_data.get('price_to', None)
