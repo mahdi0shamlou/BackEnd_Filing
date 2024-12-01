@@ -52,6 +52,7 @@ def details_file():
                         'meter': query.meter,
                         'token': query.token,
                         'desck': query.desck,
+                        'details': query.details,
                         'date_created_persian':query.date_created_persian
                     }]
 
@@ -95,6 +96,7 @@ def details_file():
                         'meter': query.meter,
                         'token': query.token,
                         'desck': query.desck,
+                        'details': query.details,
                         'date_created_persian':query.date_created_persian
                     }]
                     response_data = {
