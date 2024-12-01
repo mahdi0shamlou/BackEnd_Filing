@@ -94,44 +94,8 @@ def search_engine():
 
                     per_page = 12
 
-                    # Handle sorting logic
-                    if sort_from == 2:
-                        posts_pagination = query.order_by(PostFileSell.id.asc()).paginate(page=page, per_page=per_page,
-                                                                                          error_out=False)
-                    elif sort_from == 3:
-                        posts_pagination = query.order_by(PostFileSell.price.desc()).paginate(page=page,
-                                                                                              per_page=per_page,
-                                                                                              error_out=False)
-                    elif sort_from == 4:
-                        posts_pagination = query.order_by(PostFileSell.price.asc()).paginate(page=page,
-                                                                                             per_page=per_page,
-                                                                                             error_out=False)
-                    elif sort_from == 5:
-                        posts_pagination = query.order_by(PostFileSell.meter.desc()).paginate(page=page,
-                                                                                              per_page=per_page,
-                                                                                              error_out=False)
-                    elif sort_from == 6:
-                        posts_pagination = query.order_by(PostFileSell.meter.asc()).paginate(page=page,
-                                                                                             per_page=per_page,
-                                                                                             error_out=False)
-                    elif sort_from == 9:
-                        posts_pagination = query.order_by(PostFileSell.Otagh.desc()).paginate(page=page,
-                                                                                              per_page=per_page,
-                                                                                              error_out=False)
-                    elif sort_from == 10:
-                        posts_pagination = query.order_by(PostFileSell.Otagh.asc()).paginate(page=page,
-                                                                                             per_page=per_page,
-                                                                                             error_out=False)
-                    elif sort_from == 11:
-                        posts_pagination = query.order_by(PostFileSell.Make_years.desc()).paginate(page=page,
-                                                                                                   per_page=per_page,
-                                                                                                   error_out=False)
-                    elif sort_from == 12:
-                        posts_pagination = query.order_by(PostFileSell.Make_years.asc()).paginate(page=page,
-                                                                                                  per_page=per_page,
-                                                                                                  error_out=False)
-                    else:
-                        posts_pagination = query.order_by(PostFileSell.id.desc()).paginate(page=page, per_page=per_page,
+
+                    posts_pagination = query.order_by(PostFileSell.id.desc()).paginate(page=page, per_page=per_page,
                                                                                            error_out=False)
 
                     posts = posts_pagination.items
@@ -184,7 +148,6 @@ def search_engine():
                     rent_to = request_data.get('rent_to', None)
                     meter_from = request_data.get('meter_from', None)
                     meter_to = request_data.get('meter_to', None)
-                    sort_from = request_data.get('sort', 1)
                     page = request_data.get('page', 1)
                     otagh = request_data.get('otagh', None)
                     make = request_data.get('make', [])
@@ -247,44 +210,7 @@ def search_engine():
 
                     per_page = 12
 
-                    # Handle sorting logic
-                    if sort_from == 2:
-                        posts_pagination = query.order_by(PostFileRent.id.asc()).paginate(page=page, per_page=per_page,
-                                                                                          error_out=False)
-                    elif sort_from == 3:
-                        posts_pagination = query.order_by(PostFileRent.price.desc()).paginate(page=page,
-                                                                                              per_page=per_page,
-                                                                                              error_out=False)
-                    elif sort_from == 4:
-                        posts_pagination = query.order_by(PostFileRent.price.asc()).paginate(page=page,
-                                                                                             per_page=per_page,
-                                                                                             error_out=False)
-                    elif sort_from == 5:
-                        posts_pagination = query.order_by(PostFileRent.meter.desc()).paginate(page=page,
-                                                                                              per_page=per_page,
-                                                                                              error_out=False)
-                    elif sort_from == 6:
-                        posts_pagination = query.order_by(PostFileRent.meter.asc()).paginate(page=page,
-                                                                                             per_page=per_page,
-                                                                                             error_out=False)
-                    elif sort_from == 9:
-                        posts_pagination = query.order_by(PostFileRent.Otagh.desc()).paginate(page=page,
-                                                                                              per_page=per_page,
-                                                                                              error_out=False)
-                    elif sort_from == 10:
-                        posts_pagination = query.order_by(PostFileRent.Otagh.asc()).paginate(page=page,
-                                                                                             per_page=per_page,
-                                                                                             error_out=False)
-                    elif sort_from == 11:
-                        posts_pagination = query.order_by(PostFileRent.Make_years.desc()).paginate(page=page,
-                                                                                                   per_page=per_page,
-                                                                                                   error_out=False)
-                    elif sort_from == 12:
-                        posts_pagination = query.order_by(PostFileRent.Make_years.asc()).paginate(page=page,
-                                                                                                  per_page=per_page,
-                                                                                                  error_out=False)
-                    else:
-                        posts_pagination = query.order_by(PostFileRent.id.desc()).paginate(page=page, per_page=per_page,
+                    posts_pagination = query.order_by(PostFileRent.id.desc()).paginate(page=page, per_page=per_page,
                                                                                            error_out=False)
 
                     posts = posts_pagination.items
