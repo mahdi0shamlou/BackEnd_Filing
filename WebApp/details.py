@@ -39,12 +39,20 @@ def details_file():
                     posts_list = [{
                         'id': query.id,
                         'title': query.title,
+                        'Images': query.Images,
                         'city': query.city_text,
                         'price': query.price,
+                        'PARKING': query.PARKING,
+                        'CABINET': query.CABINET,
+                        'ELEVATOR': query.ELEVATOR,
+                        'Otagh': query.Otagh,
+                        'Make_years': query.Make_years,
+                        'phone': query.number,
                         'mahal': query.mahal_text,
                         'meter': query.meter,
                         'token': query.token,
-                        'desck': query.desck
+                        'desck': query.desck,
+                        'date_created_persian':query.date_created_persian
                     }]
 
                     response_data = {
@@ -73,15 +81,22 @@ def details_file():
                     posts_list = [{
                         'id': query.id,
                         'title': query.title,
+                        'Images': query.Images,
                         'city': query.city_text,
                         'price': query.price,
                         'rent': query.rent,
+                        'PARKING': query.PARKING,
+                        'CABINET': query.CABINET,
+                        'ELEVATOR': query.ELEVATOR,
+                        'Otagh': query.Otagh,
+                        'Make_years': query.Make_years,
+                        'phone': query.number,
                         'mahal': query.mahal_text,
                         'meter': query.meter,
                         'token': query.token,
-                        'desck': query.desck
+                        'desck': query.desck,
+                        'date_created_persian':query.date_created_persian
                     }]
-
                     response_data = {
                         'posts': posts_list,
                     }
