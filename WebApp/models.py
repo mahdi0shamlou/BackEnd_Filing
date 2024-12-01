@@ -47,6 +47,7 @@ class PostFileSell(db.Model):
     PARKING = db.Column(db.Boolean, default=False)
     ELEVATOR = db.Column(db.Boolean, default=False)
     CABINET = db.Column(db.Boolean, default=False)
+    BALCONY = db.Column(db.Boolean, default=False)
     # dict data
     details = db.Column(db.Text)
     # date
@@ -73,9 +74,11 @@ class PostFileRent(db.Model):
     Images = db.Column(db.Text)
     Otagh = db.Column(TINYINT(unsigned=True))
     Make_years = db.Column(db.BigInteger)
+    # True and False details
     PARKING = db.Column(db.Boolean, default=False)
     ELEVATOR = db.Column(db.Boolean, default=False)
     CABINET = db.Column(db.Boolean, default=False)
+    BALCONY = db.Column(db.Boolean, default=False)
     # dict data
     details = db.Column(db.Text)
     #date

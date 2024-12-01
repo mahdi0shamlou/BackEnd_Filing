@@ -90,6 +90,7 @@ class DatabaseManager:
             PARKING BOOLEAN DEFAULT FALSE,
             ELEVATOR BOOLEAN DEFAULT FALSE,
             CABINET BOOLEAN DEFAULT FALSE,
+            BALCONY BOOLEAN DEFAULT FALSE,
             date_created_persian VARCHAR(20),
             date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id)
@@ -121,6 +122,7 @@ class DatabaseManager:
             PARKING BOOLEAN DEFAULT FALSE,
             ELEVATOR BOOLEAN DEFAULT FALSE,
             CABINET BOOLEAN DEFAULT FALSE,
+            BALCONY BOOLEAN DEFAULT FALSE,
             date_created_persian VARCHAR(20),
             date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id)
