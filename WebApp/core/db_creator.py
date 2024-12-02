@@ -239,7 +239,7 @@ class DatabaseManager:
         # ----------------------------
         create_table_query = """
             CREATE TABLE IF NOT EXISTS ZoonKan (
-                id INT AUTO_INCREMENT PRIMARY KEY,
+                id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
                 user_id_created BIGINT(20) UNSIGNED NOT NULL,
                 name VARCHAR(191) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -252,7 +252,7 @@ class DatabaseManager:
 
         create_table_query = """
             CREATE TABLE IF NOT EXISTS FilesInZoonKan (
-                id INT AUTO_INCREMENT PRIMARY KEY,
+                id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
                 user_id_created BIGINT(20) UNSIGNED NOT NULL,
                 file_id_created BIGINT(20) UNSIGNED NOT NULL,
                 zoonkan_id_in BIGINT(20) UNSIGNED NOT NULL,
