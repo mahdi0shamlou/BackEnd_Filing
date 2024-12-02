@@ -217,8 +217,8 @@ class DatabaseManager:
         create_table_query = """
                 CREATE TABLE IF NOT EXISTS Notes (
                     id INT AUTO_INCREMENT PRIMARY KEY,
-                    user_id_created BIGINT(20) NOT NULL,
-                    file_id_created BIGINT(20) NOT NULL,
+                    user_id_created BIGINT(20) UNSIGNED NOT NULL,
+                    file_id_created BIGINT(20) UNSIGNED NOT NULL,
                     note TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP NULL DEFAULT NULL,
