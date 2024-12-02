@@ -12,10 +12,17 @@ from sqlalchemy import and_
 
 notes_bp = Blueprint('notes', __name__)
 
-# Regular expression for validating email format
-def validate_note(note):
-    email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
-    return re.match(email_regex, note) is not None
+# Regular expression for validating notes format
+def validate_note_text(text):
+    # حداقل طول 1 کاراکتر و حداکثر 1000 کاراکتر
+    if not 1 <= len(text) <= 1000:
+        return False
+
+    # الگوی regex برای بررسی کاراکترهای مجاز
+    # اجازه حروف فارسی، انگلیسی، اعداد، فاصله و برخی علائم نگارشی
+    pattern = r'^[\u0600-\u06FF\s\w\.,!؟?@#$%&*()_+=\-\[\]{}|؛:\"\']+$'
+
+    return bool(re.match(pattern, text))
 
 @notes_bp.route('/Notes/List', methods=['GET'])
 @jwt_required()
@@ -96,3 +103,57 @@ def delete_note():
         db.session.rollback()
         return jsonify({"message": "خطا در حذف یادداشت"}), 500
 
+
+@notes_bp.route('/Notes/Create', methods=['POST'])
+@jwt_required()
+def create_note():
+    # دریافت اطلاعات کاربر فعلی از توکن JWT
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    # پیدا کردن کاربر در دیتابیس
+    user = Users.query.filter_by(phone=user_phone).first()
+
+    if not user:
+        return jsonify({"message": "خطا کاربر مورد نظر یافت نشد!"}), 404
+
+    # دریافت داده‌های ارسالی
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"message": "داده‌ای دریافت نشد!"}), 400
+
+    note_text = data.get('note')
+    file_id = data.get('file_id')
+
+    # بررسی وجود فیلدهای ضروری
+    if not note_text or not file_id:
+        return jsonify({"message": "لطفا تمام فیلدهای ضروری را وارد کنید!"}), 400
+
+    # اعتبارسنجی متن نوت
+    if not validate_note_text(note_text):
+        return jsonify({"message": "متن نوت نامعتبر است!"}), 400
+
+    try:
+        # ایجاد نوت جدید
+        new_note = Notes(
+            user_id_created=user.id,
+            file_id_created=file_id,
+            note=note_text
+        )
+
+        db.session.add(new_note)
+        db.session.commit()
+
+        return jsonify({
+            "message": "نوت با موفقیت ایجاد شد",
+            "note": {
+                "id": new_note.id,
+                "note": new_note.note,
+                "created_at": new_note.created_at
+            }
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "خطا در ایجاد نوت"}), 500
