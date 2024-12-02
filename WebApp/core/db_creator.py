@@ -80,7 +80,7 @@ class DatabaseManager:
             type_text  VARCHAR(191) NOT NULL,
             title VARCHAR(191) NOT NULL,
             price BIGINT(30) NOT NULL,
-            price_per_meter BIGINT(30) NOT NULL,
+            price_two BIGINT(30) NOT NULL,
             meter BIGINT(30) NOT NULL,
             desck TEXT,
             map TEXT,

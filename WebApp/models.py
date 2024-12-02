@@ -40,7 +40,7 @@ class Posts(db.Model):
     Images = db.Column(db.Text)
     # more details
     price = db.Column(db.BigInteger, nullable=False)
-    price_per_meter = db.Column(db.BigInteger, nullable=False)
+    price_two = db.Column(db.BigInteger, nullable=False)
     meter = db.Column(db.BigInteger, nullable=False)
     Otagh = db.Column(TINYINT(unsigned=True))
     Make_years = db.Column(db.BigInteger)

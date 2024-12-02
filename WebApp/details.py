@@ -40,7 +40,7 @@ def details_file():
                     'city': query.city_text,
                     'type': query.type_text,
                     'price': query.price,
-                    'price_2': query.price_per_meter,
+                    'price_two': query.price_two,
                     'PARKING': query.PARKING,
                     'CABINET': query.CABINET,
                     'ELEVATOR': query.ELEVATOR,
