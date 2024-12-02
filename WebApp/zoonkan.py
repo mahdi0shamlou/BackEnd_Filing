@@ -65,7 +65,7 @@ def create_zoonkan():
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در ایجاد زونکن"}), 500
 
-@zoonkan_bp.route('/ZoonKan/AddFile', methods=['POST'])
+@zoonkan_bp.route('/ZoonKan/ ', methods=['POST'])
 @jwt_required()
 def add_file_to_zoonkan():
     # دریافت اطلاعات کاربر فعلی از توکن JWT
@@ -104,7 +104,7 @@ def add_file_to_zoonkan():
         # بررسی تکراری نبودن فایل در زونکن
         existing_file = FilesInZoonKan.query.filter_by(
             zoonkan_id_in=zoonkan_id,
-            file_id=file_id
+            file_id_created=file_id
         ).first()
 
         if existing_file:
@@ -114,7 +114,7 @@ def add_file_to_zoonkan():
         new_file_in_zoonkan = FilesInZoonKan(
             user_id_created=user.id,
             zoonkan_id_in=zoonkan_id,
-            file_id=file_id
+            file_id_created=file_id
         )
 
         db.session.add(new_file_in_zoonkan)
@@ -125,7 +125,7 @@ def add_file_to_zoonkan():
             "file_in_zoonkan": {
                 "id": new_file_in_zoonkan.id,
                 "zoonkan_id": new_file_in_zoonkan.zoonkan_id_in,
-                "file_id": new_file_in_zoonkan.file_id,
+                "file_id": new_file_in_zoonkan.file_id_created,
                 "created_at": new_file_in_zoonkan.created_at.isoformat()
             }
         }), 201
