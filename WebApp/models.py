@@ -16,8 +16,8 @@ class users(db.Model):
     phone = db.Column(db.String(191), nullable=False)
     address = db.Column(db.Text)
     email = db.Column(db.String(191), unique=True, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
-    updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now())
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
     zoonkans = relationship('ZoonKan', back_populates='user', cascade='all, delete-orphan')
     files_in_zoonkan = relationship('FilesInZoonKan', back_populates='user', cascade='all, delete-orphan')
 
