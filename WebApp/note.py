@@ -50,6 +50,7 @@ def notes_user():
 
             # Build a list of post details to send in the response
             posts_list = [{
+                'Note_id': query.id,
                 'Note': query.note,
                 'Date': query.created_at,
             } for query in posts]
