@@ -133,3 +133,11 @@ class Notes(db.Model):
     status = db.Column(db.Integer, nullable=False)
 """
 
+class Notes(db.Model):
+    __tablename__ = 'Notes'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    user_id_created = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    file_id_created = db.Column(db.BigInteger, db.ForeignKey('Posts.id', ondelete='CASCADE'), nullable=False)
+    note = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now())

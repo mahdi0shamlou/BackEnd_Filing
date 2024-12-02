@@ -214,7 +214,6 @@ class DatabaseManager:
         #----------------------------
         #---------- End Cities and Mahal table
         # ----------------------------
-
         create_table_query = """
                 CREATE TABLE IF NOT EXISTS Notes (
                     id INT AUTO_INCREMENT PRIMARY KEY,
