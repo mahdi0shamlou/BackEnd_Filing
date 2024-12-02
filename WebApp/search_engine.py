@@ -31,7 +31,7 @@ def search_engine_less_details():
         if check_accses:
             try:
                 city = request_data.get('city', 1) # 1 ,2 , 3, 4, 5, 6
-                post_type = request_data.get('type', 11)  # 11 , 12, 13, 14
+                post_type = request_data.get('type', None)  # 11 , 12, 13, 14
                 mahals = request_data.get('mahal', [])
                 price_from = request_data.get('price_from', None)
                 price_to = request_data.get('price_to', None)
@@ -149,7 +149,7 @@ def search_engine_full_details():
         if check_accses:
             try:
                 city = request_data.get('city', 1) # 1 ,2 , 3, 4, 5, 6
-                post_type = request_data.get('type', 11)  # 11 , 12, 13, 14
+                post_type = request_data.get('type', None)  # 11 , 12, 13, 14
                 mahals = request_data.get('mahal', [])
                 price_from = request_data.get('price_from', None)
                 price_to = request_data.get('price_to', None)
