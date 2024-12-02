@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 #-------------
 #------------- models
 from models import users as Users
-from models import PostFileSell, PostFileRent
+from models import Posts
 from sqlalchemy import or_
 #---------------
 

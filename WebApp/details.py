@@ -38,6 +38,7 @@ def details_file():
                     'title': query.title,
                     'Images': query.Images,
                     'city': query.city_text,
+                    'type': query.type_text,
                     'price': query.price,
                     'price_2': query.price_per_meter,
                     'PARKING': query.PARKING,
