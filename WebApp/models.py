@@ -58,7 +58,7 @@ class Posts(db.Model):
     details = db.Column(db.Text)
     # date
     date_created_persian = db.Column(db.String(20))
-    date_created = db.Column(db.DateTime, default= datetime.datetime.now())  # Use datetime.utcnow for default value
+    date_created = db.Column(db.DateTime, default= datetime.now())  # Use datetime.utcnow for default value
     files_in_zoonkan = relationship('FilesInZoonKan', back_populates='post', cascade='all, delete-orphan')
 
 """
@@ -144,8 +144,8 @@ class Notes(db.Model):
     user_id_created = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     file_id_created = db.Column(db.BigInteger, db.ForeignKey('Posts.id', ondelete='CASCADE'), nullable=False)
     note = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
-    updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now())
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
 
 class ZoonKan(db.Model):
