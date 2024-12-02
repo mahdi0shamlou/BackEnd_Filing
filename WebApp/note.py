@@ -24,6 +24,7 @@ def validate_note_text(text):
 
     return bool(re.match(pattern, text))
 
+
 @notes_bp.route('/Notes/List', methods=['GET'])
 @jwt_required()
 def notes_user():
