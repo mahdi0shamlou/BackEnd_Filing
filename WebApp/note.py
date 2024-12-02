@@ -19,7 +19,7 @@ def validate_note(note):
 
 @notes_bp.route('/Notes/Get', methods=['GET'])
 @jwt_required()
-def profile_user():
+def notes_user():
     # Get the current logged-in user's phone number from the JWT token
     current_user = get_jwt_identity()
     user_phone = current_user['phone']
@@ -31,7 +31,7 @@ def profile_user():
     if user:
         # Parse JSON body
         request_data = request.get_json()
-        id_file = request_data.get('id', None)
+        id_file = request_data.get('file_id', None)
 
         if id_file is not None:
             page = request_data.get('page', 1)
@@ -64,4 +64,35 @@ def profile_user():
 
     # If the user is not found, return an error response
     return jsonify({"message": "خطا کاربر مورد نظر یافت نشد !"}), 404
+
+
+@notes_bp.route('/Notes/Delete', methods=['DELETE'])
+@jwt_required()
+def delete_note():
+    # دریافت اطلاعات کاربر فعلی از توکن JWT
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    # پیدا کردن کاربر در دیتابیس
+    user = Users.query.filter_by(phone=user_phone).first()
+
+    if not user:
+        return jsonify({"message": "خطا کاربر مورد نظر یافت نشد!"}), 404
+
+    request_data = request.get_json()
+    note_id = request_data.get('note_id', None)
+    # پیدا کردن یادداشت مورد نظر
+    note = Notes.query.filter_by(id=note_id, user_id_created=user.id).first()
+
+    if not note:
+        return jsonify({"message": "یادداشت مورد نظر یافت نشد یا شما اجازه حذف آن را ندارید!"}), 404
+
+    try:
+        # حذف یادداشت از دیتابیس
+        db.session.delete(note)
+        db.session.commit()
+        return jsonify({"message": "یادداشت با موفقیت حذف شد"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "خطا در حذف یادداشت"}), 500
 
