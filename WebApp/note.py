@@ -17,7 +17,7 @@ def validate_note(note):
     email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
     return re.match(email_regex, note) is not None
 
-@notes_bp.route('/Notes/Get', methods=['GET'])
+@notes_bp.route('/Notes/List', methods=['GET'])
 @jwt_required()
 def notes_user():
     # Get the current logged-in user's phone number from the JWT token
