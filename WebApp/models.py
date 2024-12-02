@@ -1,6 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import TINYINT
-import datetime
+from datetime import datetime
+from sqlalchemy.orm import relationship
+
+
 
 db = SQLAlchemy()
 
@@ -15,6 +18,8 @@ class users(db.Model):
     email = db.Column(db.String(191), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now())
+    zoonkans = relationship('ZoonKan', back_populates='user', cascade='all, delete-orphan')
+    files_in_zoonkan = relationship('FilesInZoonKan', back_populates='user', cascade='all, delete-orphan')
 
 class Posts(db.Model):
     __tablename__ = 'Posts'
@@ -54,7 +59,7 @@ class Posts(db.Model):
     # date
     date_created_persian = db.Column(db.String(20))
     date_created = db.Column(db.DateTime, default= datetime.datetime.now())  # Use datetime.utcnow for default value
-
+    files_in_zoonkan = relationship('FilesInZoonKan', back_populates='post', cascade='all, delete-orphan')
 
 """
 class PostFileSell(db.Model):
@@ -141,3 +146,33 @@ class Notes(db.Model):
     note = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now())
+
+
+class ZoonKan(db.Model):
+    __tablename__ = 'ZoonKan'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id_created = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    name = db.Column(db.String(191), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now)
+
+    # Relationships
+    user = relationship('users', back_populates='zoonkans')
+    files = relationship('FilesInZoonKan', back_populates='zoonkan', cascade='all, delete-orphan')
+
+
+class FilesInZoonKan(db.Model):
+    __tablename__ = 'FilesInZoonKan'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id_created = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    file_id_created = db.Column(db.BigInteger, db.ForeignKey('Posts.id', ondelete='CASCADE'), nullable=False)
+    zoonkan_id_in = db.Column(db.BigInteger, db.ForeignKey('ZoonKan.id', ondelete='CASCADE'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now)
+
+    # Relationships
+    user = relationship('users', back_populates='files_in_zoonkan')
+    post = relationship('Posts', back_populates='files_in_zoonkan')
+    zoonkan = relationship('ZoonKan', back_populates='files')

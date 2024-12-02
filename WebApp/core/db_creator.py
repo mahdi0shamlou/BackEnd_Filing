@@ -214,6 +214,9 @@ class DatabaseManager:
         #----------------------------
         #---------- End Cities and Mahal table
         # ----------------------------
+        #----------------------------
+        #---------- Create Notes table
+        # ----------------------------
         create_table_query = """
                 CREATE TABLE IF NOT EXISTS Notes (
                     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -228,6 +231,43 @@ class DatabaseManager:
                 """
         self.cursor.execute(create_table_query)
         self.connection.commit()
+        #----------------------------
+        #---------- End Notes table
+        # ----------------------------
+        #----------------------------
+        #---------- Create ZoonKan table
+        # ----------------------------
+        create_table_query = """
+            CREATE TABLE IF NOT EXISTS ZoonKan (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id_created BIGINT(20) UNSIGNED NOT NULL,
+                name VARCHAR(191) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT NULL,
+                FOREIGN KEY (user_id_created) REFERENCES users(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+
+        create_table_query = """
+            CREATE TABLE IF NOT EXISTS FilesInZoonKan (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id_created BIGINT(20) UNSIGNED NOT NULL,
+                file_id_created BIGINT(20) UNSIGNED NOT NULL,
+                zoonkan_id_in BIGINT(20) UNSIGNED NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT NULL,
+                FOREIGN KEY (user_id_created) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (file_id_created) REFERENCES Posts(id) ON DELETE CASCADE,
+                FOREIGN KEY (zoonkan_id_in) REFERENCES ZoonKan(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+        #----------------------------
+        #---------- End Notes table
+        # ----------------------------
 
 
     def close(self):
