@@ -45,7 +45,7 @@ def profile_user():
             posts_list = [{
                 'Note': query.note,
                 'Date': query.created_at,
-            } for query in posts]   
+            } for query in posts]
             response_data = {
                 'posts': posts_list,
                 'pagination': {
