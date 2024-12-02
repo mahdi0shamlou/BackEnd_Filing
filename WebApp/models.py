@@ -33,6 +33,7 @@ class Posts(db.Model):
     map = db.Column(db.Text)
     # type
     type = db.Column(db.BigInteger, nullable=False)
+    type_text = db.Column(db.String(191), nullable=False)
     # title and desck and images
     title = db.Column(db.String(191), nullable=False)
     desck = db.Column(db.Text)

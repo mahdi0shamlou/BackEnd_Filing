@@ -77,6 +77,7 @@ class DatabaseManager:
             mahal  BIGINT(5) NOT NULL,
             mahal_text  VARCHAR(191) NOT NULL,
             type BIGINT(3) NOT NULL,
+            type_text  VARCHAR(191) NOT NULL,
             title VARCHAR(191) NOT NULL,
             price BIGINT(30) NOT NULL,
             price_per_meter BIGINT(30) NOT NULL,
