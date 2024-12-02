@@ -39,6 +39,7 @@ def details_file():
                     'Images': query.Images,
                     'city': query.city_text,
                     'type': query.type_text,
+                    '_type': str(query.type)[0],
                     'price': query.price,
                     'price_two': query.price_two,
                     'PARKING': query.PARKING,
