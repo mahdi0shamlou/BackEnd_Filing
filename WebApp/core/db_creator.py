@@ -215,6 +215,21 @@ class DatabaseManager:
         #---------- End Cities and Mahal table
         # ----------------------------
 
+        create_table_query = """
+                CREATE TABLE IF NOT EXISTS Notes (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    user_id_created BIGINT(20) NOT NULL,
+                    file_id_created BIGINT(20) NOT NULL,
+                    note TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP NULL DEFAULT NULL,
+                    FOREIGN KEY (user_id_created) REFERENCES users(id) ON DELETE CASCADE,
+                    FOREIGN KEY (file_id_created) REFERENCES Posts(id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+                """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+
 
     def close(self):
         self.cursor.close()
