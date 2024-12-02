@@ -65,7 +65,7 @@ def create_zoonkan():
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در ایجاد زونکن"}), 500
 
-@zoonkan_bp.route('/ZoonKan/ ', methods=['POST'])
+@zoonkan_bp.route('/ZoonKan/AddFile', methods=['POST'])
 @jwt_required()
 def add_file_to_zoonkan():
     # دریافت اطلاعات کاربر فعلی از توکن JWT
