@@ -182,49 +182,52 @@ def get_user_zoonkans():
 @zoonkan_bp.route('/ZoonKan/<int:zoonkan_id>/Files', methods=['GET'])
 @jwt_required()
 def get_zoonkan_files(zoonkan_id):
-    current_user = get_jwt_identity()
-    user_phone = current_user['phone']
+    try:
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
 
-    user = Users.query.filter_by(phone=user_phone).first()
-    if not user:
-        return jsonify({"message": "کاربر یافت نشد!"}), 404
+        user = Users.query.filter_by(phone=user_phone).first()
+        if not user:
+            return jsonify({"message": "کاربر یافت نشد!"}), 404
 
-    # بررسی وجود و دسترسی به زونکن
-    zoonkan = ZoonKan.query.get(zoonkan_id)
-    if not zoonkan:
-        return jsonify({"message": "زونکن مورد نظر یافت نشد!"}), 404
+        # بررسی وجود و دسترسی به زونکن
+        zoonkan = ZoonKan.query.get(zoonkan_id)
+        if not zoonkan:
+            return jsonify({"message": "زونکن مورد نظر یافت نشد!"}), 404
 
-    if zoonkan.user_id_created != user.id:
-        return jsonify({"message": "شما به این زونکن دسترسی ندارید!"}), 403
+        if zoonkan.user_id_created != user.id:
+            return jsonify({"message": "شما به این زونکن دسترسی ندارید!"}), 403
 
-    # دریافت پارامترهای صفحه‌بندی
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+        # دریافت پارامترهای صفحه‌بندی
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
 
-    # کوئری فایل‌های زونکن
-    query = FilesInZoonKan.query.filter_by(zoonkan_id_in=zoonkan_id)
+        # کوئری فایل‌های زونکن
+        query = FilesInZoonKan.query.filter_by(zoonkan_id_in=zoonkan_id)
 
-    files_pagination = query.order_by(FilesInZoonKan.id.desc()).paginate(
-        page=page, per_page=per_page, error_out=False
-    )
+        files_pagination = query.order_by(FilesInZoonKan.id.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
-    files = files_pagination.items
+        files = files_pagination.items
 
-    files_list = [{
-        'file_id': file.file_id,
-        'added_by': file.user_id_created,
-        'added_at': file.created_at,
-    } for file in files]
+        files_list = [{
+            'file_id': file.file_id,
+            'added_by': file.user_id_created,
+            'added_at': file.created_at,
+        } for file in files]
 
-    response_data = {
-        'files': files_list,
-        'pagination': {
-            'current_page': page,
-            'next_page': page + 1 if files_pagination.has_next else None,
-            'previous_page': page - 1 if files_pagination.has_prev else None,
-            'per_page': per_page,
-            'total_files': files_pagination.total
+        response_data = {
+            'files': files_list,
+            'pagination': {
+                'current_page': page,
+                'next_page': page + 1 if files_pagination.has_next else None,
+                'previous_page': page - 1 if files_pagination.has_prev else None,
+                'per_page': per_page,
+                'total_files': files_pagination.total
+            }
         }
-    }
 
-    return jsonify(response_data)
+        return jsonify(response_data)
+    except Exception as e:
+        print(e)
