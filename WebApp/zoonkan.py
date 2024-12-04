@@ -134,3 +134,97 @@ def add_file_to_zoonkan():
         db.session.rollback()
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در اضافه کردن فایل به زونکن"}), 500
+
+
+@zoonkan_bp.route('/ZoonKan/List', methods=['GET'])
+@jwt_required()
+def get_user_zoonkans():
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    user = Users.query.filter_by(phone=user_phone).first()
+    if not user:
+        return jsonify({"message": "کاربر یافت نشد!"}), 404
+
+    # دریافت پارامترهای صفحه‌بندی
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    # کوئری زونکن‌های کاربر
+    query = ZoonKan.query.filter_by(user_id_created=user.id)
+
+    zoonkans_pagination = query.order_by(ZoonKan.id.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+
+    zoonkans = zoonkans_pagination.items
+
+    zoonkans_list = [{
+        'zoonkan_id': zoonkan.id,
+        'name': zoonkan.name,
+        'created_at': zoonkan.created_at,
+    } for zoonkan in zoonkans]
+
+    response_data = {
+        'zoonkans': zoonkans_list,
+        'pagination': {
+            'current_page': page,
+            'next_page': page + 1 if zoonkans_pagination.has_next else None,
+            'previous_page': page - 1 if zoonkans_pagination.has_prev else None,
+            'per_page': per_page,
+            'total_zoonkans': zoonkans_pagination.total
+        }
+    }
+
+    return jsonify(response_data)
+
+
+@zoonkan_bp.route('/ZoonKan/<int:zoonkan_id>/Files', methods=['GET'])
+@jwt_required()
+def get_zoonkan_files(zoonkan_id):
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    user = Users.query.filter_by(phone=user_phone).first()
+    if not user:
+        return jsonify({"message": "کاربر یافت نشد!"}), 404
+
+    # بررسی وجود و دسترسی به زونکن
+    zoonkan = ZoonKan.query.get(zoonkan_id)
+    if not zoonkan:
+        return jsonify({"message": "زونکن مورد نظر یافت نشد!"}), 404
+
+    if zoonkan.user_id_created != user.id:
+        return jsonify({"message": "شما به این زونکن دسترسی ندارید!"}), 403
+
+    # دریافت پارامترهای صفحه‌بندی
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    # کوئری فایل‌های زونکن
+    query = FilesInZoonKan.query.filter_by(zoonkan_id_in=zoonkan_id)
+
+    files_pagination = query.order_by(FilesInZoonKan.id.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+
+    files = files_pagination.items
+
+    files_list = [{
+        'file_id': file.file_id,
+        'added_by': file.user_id_created,
+        'added_at': file.created_at,
+    } for file in files]
+
+    response_data = {
+        'files': files_list,
+        'pagination': {
+            'current_page': page,
+            'next_page': page + 1 if files_pagination.has_next else None,
+            'previous_page': page - 1 if files_pagination.has_prev else None,
+            'per_page': per_page,
+            'total_files': files_pagination.total
+        }
+    }
+
+    return jsonify(response_data)
