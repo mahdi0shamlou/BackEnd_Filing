@@ -191,7 +191,8 @@ def get_zoonkan_files(zoonkan_id):
             return jsonify({"message": "کاربر یافت نشد!"}), 404
 
         # بررسی وجود و دسترسی به زونکن
-        zoonkan = ZoonKan.query.get(zoonkan_id)
+        zoonkan = ZoonKan.query.filter_by(id=zoonkan_id).first()
+
         if not zoonkan:
             return jsonify({"message": "زونکن مورد نظر یافت نشد!"}), 404
 
