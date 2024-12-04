@@ -213,7 +213,7 @@ def get_zoonkan_files(zoonkan_id):
         files = files_pagination.items
 
         files_list = [{
-            'file_id': file.file_id,
+            'file_id': file.file_id_created,
             'added_by': file.user_id_created,
             'added_at': file.created_at,
         } for file in files]
