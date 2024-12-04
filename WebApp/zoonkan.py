@@ -231,4 +231,5 @@ def get_zoonkan_files(zoonkan_id):
 
         return jsonify(response_data)
     except Exception as e:
-        print(e)
+        return jsonify({"message": f"{e}"}), 500
+
