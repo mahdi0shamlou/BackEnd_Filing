@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 # -------------
 # ------------- models
 from models import users as Users
-from models import db
+from models import db, Posts
 from models import ZoonKan
 from models import FilesInZoonKan
 # ---------------
@@ -203,8 +203,8 @@ def get_zoonkan_files(zoonkan_id):
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
 
-        # کوئری فایل‌های زونکن
-        query = FilesInZoonKan.query.filter_by(zoonkan_id_in=zoonkan_id)
+        # کوئری فایل‌های زونکن با جوین Posts
+        query = db.session.query(FilesInZoonKan, Posts).join(Posts, FilesInZoonKan.file_id_created == Posts.id).filter(FilesInZoonKan.zoonkan_id_in == zoonkan_id)
 
         files_pagination = query.order_by(FilesInZoonKan.id.desc()).paginate(
             page=page, per_page=per_page, error_out=False
@@ -213,9 +213,19 @@ def get_zoonkan_files(zoonkan_id):
         files = files_pagination.items
 
         files_list = [{
-            'file_id': file.file_id_created,
-            'added_by': file.user_id_created,
-            'added_at': file.created_at,
+            'file_id': file.FilesInZoonKan.file_id_created,
+            'added_by': file.FilesInZoonKan.user_id_created,
+            'added_at': file.FilesInZoonKan.created_at,
+            'post_data': {
+                'title': file.Posts.title,
+                'price': file.Posts.price,
+                'meter': file.Posts.meter,
+                'city_text': file.Posts.city_text,
+                'mahal_text': file.Posts.mahal_text,
+                'type_text': file.Posts.type_text,
+                'images': file.Posts.Images,
+                'status': file.Posts.status
+            }
         } for file in files]
 
         response_data = {
@@ -232,4 +242,3 @@ def get_zoonkan_files(zoonkan_id):
         return jsonify(response_data)
     except Exception as e:
         return jsonify({"message": f"{e}"}), 500
-
