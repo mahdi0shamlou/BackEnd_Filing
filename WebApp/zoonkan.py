@@ -10,8 +10,6 @@ from models import ZoonKan
 from models import FilesInZoonKan
 # ---------------
 
-# ---------------
-
 zoonkan_bp = Blueprint('zoonkan', __name__)
 
 @zoonkan_bp.route('/ZoonKan/Create', methods=['POST'])
