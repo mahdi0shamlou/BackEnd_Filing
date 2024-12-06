@@ -73,3 +73,4 @@ def details_file():
         print(e)
         return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
 
+

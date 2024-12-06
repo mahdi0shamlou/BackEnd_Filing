@@ -14,6 +14,7 @@ from details import details_bp
 from note import notes_bp
 from zoonkan import zoonkan_bp
 #-----------------
+from testss import test_bp
 
 
 config = configparser.ConfigParser()
@@ -56,6 +57,7 @@ app.register_blueprint(searchenign_bp)
 app.register_blueprint(details_bp)
 app.register_blueprint(notes_bp)
 app.register_blueprint(zoonkan_bp)
+app.register_blueprint(test_bp)
 
 @jwt.expired_token_loader
 def expired_token_callback(jwt_header, jwt_payload):
