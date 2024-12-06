@@ -297,8 +297,24 @@ class DatabaseManager:
         self.cursor.execute(create_table_query)
         self.connection.commit()
         #----------------------------
-        #---------- End Notes classifire
+        #---------- End classifire
         # ----------------------------
+        #----------------------------
+        #---------- Start user Access
+        # ----------------------------
+        create_table_query = """
+            CREATE TABLE IF NOT EXISTS User_Access (
+                id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+                user_id BIGINT(20) UNSIGNED NOT NULL,
+                classifictions_id BIGINT(20) UNSIGNED NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (classifictions_id) REFERENCES Classifictions(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
 
 
     def close(self):
