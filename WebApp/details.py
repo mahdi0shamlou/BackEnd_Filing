@@ -24,12 +24,13 @@ def details_file():
 
         current_user = get_jwt_identity()
         user_phone = current_user['phone']
+        id_file = request_data.get('id', 1)
 
         user = Users.query.filter_by(phone=user_phone).first()
-        check_accses = check_user_has_accses(user, 0)
+        check_accses = check_user_has_accses(user, id_file)
         if check_accses:
             try:
-                id_file = request_data.get('id', 1)
+
 
                 query = Posts.query.filter_by(id=id_file).first()
 

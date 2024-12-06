@@ -21,6 +21,8 @@ class users(db.Model):
     zoonkans = relationship('ZoonKan', back_populates='user', cascade='all, delete-orphan')
     files_in_zoonkan = relationship('FilesInZoonKan', back_populates='user', cascade='all, delete-orphan')
 
+    user_access = relationship('UserAccess', back_populates='user', cascade='all, delete-orphan')
+
 class Posts(db.Model):
     __tablename__ = 'Posts'
     #----------------- start
@@ -176,3 +178,50 @@ class FilesInZoonKan(db.Model):
     user = relationship('users', back_populates='files_in_zoonkan')
     post = relationship('Posts', back_populates='files_in_zoonkan')
     zoonkan = relationship('ZoonKan', back_populates='files')
+
+
+class Classification(db.Model):
+    __tablename__ = 'Classifictions'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(191), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+    neighborhoods = relationship('ClassificationNeighborhood', back_populates='classification')
+    user_access = relationship('UserAccess', back_populates='classification')
+
+
+class ClassificationNeighborhood(db.Model):
+    __tablename__ = 'Classifictions_Neighborhoods'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    classifiction_id = db.Column(db.BigInteger, ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
+    neighborhood_id = db.Column(db.BigInteger, ForeignKey('Neighborhoods.id', ondelete='CASCADE'), nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+    classification = relationship('Classification', back_populates='neighborhoods')
+    neighborhood = relationship('Neighborhood', back_populates='classifications')
+
+
+class UserAccess(db.Model):
+    __tablename__ = 'User_Access'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.BigInteger, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    classifictions_id = db.Column(db.BigInteger, ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+    user = relationship('User', back_populates='user_access')
+    classification = relationship('Classification', back_populates='user_access')
+
+
+class Neighborhood(db.Model):
+    __tablename__ = 'Neighborhoods'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(191), nullable=False)
+    city_id = db.Column(db.BigInteger, ForeignKey('Cities.id', ondelete='CASCADE'), nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.now())
+
+    city = relationship('City', back_populates='neighborhoods')
+    classifications = relationship('ClassificationNeighborhood', back_populates='neighborhood')
