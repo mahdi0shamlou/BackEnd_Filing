@@ -4,7 +4,6 @@ from datetime import datetime
 from sqlalchemy.orm import relationship
 
 
-
 db = SQLAlchemy()
 
 class users(db.Model):
@@ -20,7 +19,6 @@ class users(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
     zoonkans = relationship('ZoonKan', back_populates='user', cascade='all, delete-orphan')
     files_in_zoonkan = relationship('FilesInZoonKan', back_populates='user', cascade='all, delete-orphan')
-
     user_access = relationship('UserAccess', back_populates='user', cascade='all, delete-orphan')
 
 class Posts(db.Model):
@@ -194,8 +192,8 @@ class Classification(db.Model):
 class ClassificationNeighborhood(db.Model):
     __tablename__ = 'Classifictions_Neighborhoods'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    classifiction_id = db.Column(db.BigInteger, ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
-    neighborhood_id = db.Column(db.BigInteger, ForeignKey('Neighborhoods.id', ondelete='CASCADE'), nullable=False)
+    classifiction_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
+    neighborhood_id = db.Column(db.BigInteger, db.ForeignKey('Neighborhoods.id', ondelete='CASCADE'), nullable=False)
     type = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
@@ -207,8 +205,8 @@ class ClassificationNeighborhood(db.Model):
 class UserAccess(db.Model):
     __tablename__ = 'User_Access'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.BigInteger, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    classifictions_id = db.Column(db.BigInteger, ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    classifictions_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
@@ -220,7 +218,7 @@ class Neighborhood(db.Model):
     __tablename__ = 'Neighborhoods'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     name = db.Column(db.String(191), nullable=False)
-    city_id = db.Column(db.BigInteger, ForeignKey('Cities.id', ondelete='CASCADE'), nullable=False)
+    city_id = db.Column(db.BigInteger, db.ForeignKey('Cities.id', ondelete='CASCADE'), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.now())
 
     city = relationship('City', back_populates='neighborhoods')
