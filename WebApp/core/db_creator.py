@@ -290,8 +290,8 @@ class DatabaseManager:
                 type INT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP NULL DEFAULT NULL
-                FOREIGN KEY (classifictions_id) REFERENCES Classifictions(id) ON DELETE CASCADE,
-                FOREIGN KEY (neighborhoods_id) REFERENCES Neighborhoods(id) ON DELETE CASCADE
+                FOREIGN KEY (classifiction_id) REFERENCES Classifictions(id) ON DELETE CASCADE,
+                FOREIGN KEY (neighborhood_id) REFERENCES Neighborhoods(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             """
         self.cursor.execute(create_table_query)
