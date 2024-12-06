@@ -217,14 +217,26 @@ def get_zoonkan_files(zoonkan_id):
             'added_by': file.FilesInZoonKan.user_id_created,
             'added_at': file.FilesInZoonKan.created_at,
             'post_data': {
+                'id': file.Posts.id,
                 'title': file.Posts.title,
+                'Images': file.Posts.Images,
+                'city': file.Posts.city_text,
+                'type': file.Posts.type_text,
+                '_type': str(file.Posts.type)[0],
                 'price': file.Posts.price,
+                'price_two': file.Posts.price_two,
+                'PARKING': file.Posts.PARKING,
+                'CABINET': file.Posts.CABINET,
+                'ELEVATOR': file.Posts.ELEVATOR,
+                'Otagh': file.Posts.Otagh,
+                'Make_years': file.Posts.Make_years,
+                'phone': file.Posts.number,
+                'mahal': file.Posts.mahal_text,
                 'meter': file.Posts.meter,
-                'city_text': file.Posts.city_text,
-                'mahal_text': file.Posts.mahal_text,
-                'type_text': file.Posts.type_text,
-                'images': file.Posts.Images,
-                'status': file.Posts.status
+                'token': file.Posts.token,
+                'desck': file.Posts.desck,
+                'details': file.Posts.details,
+                'date_created_persian': file.Posts.date_created_persian
             }
         } for file in files]
 
