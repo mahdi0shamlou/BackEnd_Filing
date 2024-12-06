@@ -289,7 +289,7 @@ class DatabaseManager:
                 neighborhood_id BIGINT(20) UNSIGNED NOT NULL,
                 type INT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP NULL DEFAULT NULL
+                updated_at TIMESTAMP NULL DEFAULT NULL,
                 FOREIGN KEY (classifiction_id) REFERENCES Classifictions(id) ON DELETE CASCADE,
                 FOREIGN KEY (neighborhood_id) REFERENCES Neighborhoods(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
