@@ -269,7 +269,7 @@ class DatabaseManager:
         #---------- End Notes table
         # ----------------------------
         #----------------------------
-        #---------- Start Classifictions 
+        #---------- Start Classifictions
         # ----------------------------
         create_table_query = """
             CREATE TABLE IF NOT EXISTS Classifictions (
@@ -285,8 +285,8 @@ class DatabaseManager:
         create_table_query = """
             CREATE TABLE IF NOT EXISTS Classifictions_Neighborhoods (
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
-                classifictions_id BIGINT(20) UNSIGNED NOT NULL,
-                neighborhoods_id BIGINT(20) UNSIGNED NOT NULL,
+                classifiction_id BIGINT(20) UNSIGNED NOT NULL,
+                neighborhood_id BIGINT(20) UNSIGNED NOT NULL,
                 type INT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP NULL DEFAULT NULL
