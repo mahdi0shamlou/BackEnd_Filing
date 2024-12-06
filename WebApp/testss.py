@@ -30,4 +30,4 @@ def get_user_neighborhoods_access_1(user_id):
 @test_bp.route('/test', methods=['POST'])
 def tests():
     x = get_user_neighborhoods_access_1(2)
-    return jsonify({'message': x}), 200
+    return jsonify({'message': str(x)}), 200
