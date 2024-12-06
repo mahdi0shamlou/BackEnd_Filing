@@ -10,6 +10,8 @@ from models import ZoonKan
 from models import FilesInZoonKan
 # ---------------
 
+# ---------------
+
 zoonkan_bp = Blueprint('zoonkan', __name__)
 
 @zoonkan_bp.route('/ZoonKan/Create', methods=['POST'])
@@ -254,3 +256,60 @@ def get_zoonkan_files(zoonkan_id):
         return jsonify(response_data)
     except Exception as e:
         return jsonify({"message": f"{e}"}), 500
+
+
+@zoonkan_bp.route('/ZoonKan/Delete/<int:zoonkan_id>', methods=['DELETE'])
+@jwt_required()
+def delete_zoonkan(zoonkan_id):
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    # یافتن کاربر
+    user = Users.query.filter_by(phone=user_phone).first()
+    if not user:
+        return jsonify({"message": "کاربر یافت نشد!"}), 404
+
+    # یافتن زونکن
+    zoonkan = ZoonKan.query.filter_by(id=zoonkan_id, user_id_created=user.id).first()
+    if not zoonkan:
+        return jsonify({"message": "زونکن یافت نشد یا شما دسترسی به آن ندارید!"}), 404
+
+    try:
+        db.session.delete(zoonkan)
+        db.session.commit()
+        return jsonify({"message": "زونکن با موفقیت حذف شد"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "خطا در حذف زونکن"}), 500
+
+
+@zoonkan_bp.route('/ZoonKan/RemoveFile/<int:zoonkan_id>/<int:file_id>', methods=['DELETE'])
+@jwt_required()
+def remove_file_from_zoonkan(zoonkan_id, file_id):
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    # یافتن کاربر
+    user = Users.query.filter_by(phone=user_phone).first()
+    if not user:
+        return jsonify({"message": "کاربر یافت نشد!"}), 404
+
+    # یافتن فایل در زونکن
+    file_in_zoonkan = FilesInZoonKan.query.filter_by(
+        zoonkan_id_in=zoonkan_id,
+        file_id_created=file_id,
+        user_id_created=user.id
+    ).first()
+
+    if not file_in_zoonkan:
+        return jsonify({"message": "فایل در زونکن یافت نشد یا شما دسترسی به آن ندارید!"}), 404
+
+    try:
+        db.session.delete(file_in_zoonkan)
+        db.session.commit()
+        return jsonify({"message": "فایل با موفقیت از زونکن حذف شد"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "خطا در حذف فایل از زونکن"}), 500
+
+
