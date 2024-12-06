@@ -1,34 +1,68 @@
-from models import users as User
 from models import db
 from models import Classification, ClassificationNeighborhood, Neighborhood, UserAccess
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, make_response
+from sqlalchemy import select
+
 
 test_bp = Blueprint('test', __name__)
 
 
-# روش 1: استفاده از join های متوالی
-def get_user_neighborhoods_access_1(user_id):
-    neighborhoods = db.session.query(
-        User.name.label('user_name'),
-        Classification.name.label('classification_name'),
-        Neighborhood.name.label('neighborhood_name'),
-        ClassificationNeighborhood.type
-    ).join(
-        UserAccess, User.id == UserAccess.user_id
-    ).join(
-        Classification, UserAccess.classifictions_id == Classification.id
-    ).join(
-        ClassificationNeighborhood, Classification.id == ClassificationNeighborhood.classifiction_id
-    ).join(
-        Neighborhood, ClassificationNeighborhood.neighborhood_id == Neighborhood.id
-    ).filter(
-        User.id == user_id
-    ).all()
+def get_user_neighborhoods_access_2(user_id):
+    try:
+        # ساخت کوئری با select
+        user_classifications = select(UserAccess.classifictions_id).where(
+            UserAccess.user_id == user_id
+        ).scalar_subquery()
 
-    return neighborhoods
+        # کوئری اصلی
+        neighborhoods = db.session.query(
+            Neighborhood.name,
+            Classification.name.label('classification_name'),
+            ClassificationNeighborhood.type
+        ).join(
+            ClassificationNeighborhood,
+            Neighborhood.id == ClassificationNeighborhood.neighborhood_id
+        ).join(
+            Classification,
+            ClassificationNeighborhood.classifiction_id == Classification.id
+        ).filter(
+            Classification.id.in_(user_classifications)
+        ).all()
 
-@test_bp.route('/test', methods=['POST'])
-def tests():
-    x = get_user_neighborhoods_access_1(2)
-    print(x)
-    return 200
+        # تبدیل نتایج به دیکشنری
+        result = []
+        for n in neighborhoods:
+            result.append({
+                'neighborhood_name': n.name,
+                'classification_name': n.classification_name,
+                'access_type': n.type
+            })
+        return result
+
+    except Exception as e:
+        print(f"Error in get_user_neighborhoods_access_2: {str(e)}")
+        return None
+
+
+@test_bp.route('/test/<int:user_id>', methods=['GET'])
+def tests(user_id):
+    try:
+        results = get_user_neighborhoods_access_2(user_id)
+        print(results)
+
+        if results is None:
+            return make_response(jsonify({
+                'status': 'error',
+                'message': 'An error occurred while fetching data'
+            }), 500)
+
+        return make_response(jsonify({
+            'status': 'success',
+            'data': results
+        }), 200)
+
+    except Exception as e:
+        return make_response(jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500)
