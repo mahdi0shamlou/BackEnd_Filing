@@ -30,16 +30,19 @@ def search_engine_less_details():
         check_accses = check_user_has_accses(user, 0)
         if check_accses:
             try:
-                city = request_data.get('city', 1) # 1 ,2 , 3, 4, 5, 6
+                city = request_data.get('city', 1)  # 1 ,2 , 3, 4, 5, 6
                 post_type = request_data.get('type', None)  # 11 , 12, 13, 14
                 mahals = request_data.get('mahal', [])
                 price_from = request_data.get('price_from', None)
                 price_to = request_data.get('price_to', None)
+                price_from_two = request_data.get('price_from_2', None)
+                price_to_two = request_data.get('price_to_2', None)
                 meter_from = request_data.get('meter_from', None)
                 meter_to = request_data.get('meter_to', None)
                 page = request_data.get('page', 1)
                 otagh = request_data.get('otagh', None)
-                make = request_data.get('make', [])
+                make_from = request_data.get('make_from')
+                make_to = request_data.get('make_two')
                 desck = request_data.get('desck', None)
 
                 # Start with the base query and replace filter_by() with filter()
@@ -58,6 +61,13 @@ def search_engine_less_details():
                 elif price_to is not None:
                     query = query.filter(Posts.price <= price_to)
 
+                if price_from_two is not None and price_to_two is not None:
+                    query = query.filter(Posts.price_two.between(price_from_two, price_to_two))
+                elif price_from_two is not None:
+                    query = query.filter(Posts.price_two >= price_from_two)
+                elif price_to_two is not None:
+                    query = query.filter(Posts.price_two <= price_to_two)
+
                 if meter_from is not None and meter_to is not None:
                     query = query.filter(Posts.meter.between(meter_from, meter_to))
                 elif meter_from is not None:
@@ -69,9 +79,12 @@ def search_engine_less_details():
                     if otagh != -1:
                         query = query.filter(Posts.Otagh == otagh)
 
-                if make:
-                    if -1 not in make:
-                        query = query.filter(Posts.Make_years.in_(make[:4]))
+                if make_from is not None and make_to is not None:
+                    query = query.filter(Posts.Make_years.between(make_from, make_to))
+                elif make_from is not None:
+                    query = query.filter(Posts.Make_years >= make_from)
+                elif make_to is not None:
+                    query = query.filter(Posts.Make_years <= make_to)
 
                 if 'parking' in request_data:
                     query = query.filter(Posts.PARKING == True)
@@ -90,12 +103,10 @@ def search_engine_less_details():
 
                 per_page = 12
 
-
                 posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
-                                                                                       error_out=False)
+                                                                            error_out=False)
 
                 posts = posts_pagination.items
-
                 # Build a list of post details to send in the response
                 posts_list = [{
                     'id': post.id,
@@ -159,7 +170,8 @@ def search_engine_full_details():
                 meter_to = request_data.get('meter_to', None)
                 page = request_data.get('page', 1)
                 otagh = request_data.get('otagh', None)
-                make = request_data.get('make', [])
+                make_from = request_data.get('make_from')
+                make_to = request_data.get('make_two')
                 desck = request_data.get('desck', None)
 
                 # Start with the base query and replace filter_by() with filter()
@@ -196,9 +208,13 @@ def search_engine_full_details():
                     if otagh != -1:
                         query = query.filter(Posts.Otagh == otagh)
 
-                if make:
-                    if -1 not in make:
-                        query = query.filter(Posts.Make_years.in_(make[:4]))
+                if make_from is not None and make_to is not None:
+                    query = query.filter(Posts.Make_years.between(make_from, make_to))
+                elif make_from is not None:
+                    query = query.filter(Posts.Make_years >= make_from)
+                elif make_to is not None:
+                    query = query.filter(Posts.Make_years <= make_to)
+
 
                 if 'parking' in request_data:
                     query = query.filter(Posts.PARKING == True)
