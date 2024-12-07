@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 #------------- models
 from models import users as Users
 from models import Posts
+from models import Neighborhood as Mahals
 from sqlalchemy import or_
 #---------------
 
@@ -284,3 +285,23 @@ def search_engine_full_details():
     except Exception as e:
         print(e)
         return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
+
+
+#-------------------------------------
+# mahal requests
+#-------------------------------------
+@searchenign_bp.route('/Search/Mahals', methods=['GET'])
+@jwt_required()
+def mahal():
+    try:
+        city = request.args.get('city', 1, type=int)
+        query_mahal = Mahals.query.filter_by(city_id=city)
+        mahal_response = [{
+            'number':mahal.id,
+            'name': mahal.name
+        } for mahal in query_mahal]
+
+        return jsonify(mahal_response)
+    except Exception as e:
+        print(e)
+        return 500
