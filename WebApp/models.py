@@ -132,7 +132,6 @@ class UserAccess(db.Model):
     user = relationship('users', back_populates='user_access')  # حذف backref و استفاده از back_populates
     classification = relationship('Classification', back_populates='user_access')
 
-
 class Neighborhood(db.Model):
     __tablename__ = 'Neighborhoods'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)

@@ -1,12 +1,16 @@
-from flask import request, Blueprint, jsonify
+from flask import request
 #-------------jwt tokens
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import Blueprint, jsonify, make_response
 #-------------
 #------------- models
 from models import users as Users
 from models import Posts
 from models import Neighborhood as Mahals
 from sqlalchemy import or_
+from models import db
+from models import Classification, ClassificationNeighborhood, Neighborhood, UserAccess
+from sqlalchemy import select
 #---------------
 
 searchenign_bp = Blueprint('searchenign', __name__)
@@ -290,18 +294,86 @@ def search_engine_full_details():
 #-------------------------------------
 # mahal requests
 #-------------------------------------
-@searchenign_bp.route('/Search/Mahals', methods=['GET'])
-@jwt_required()
-def mahal():
-    try:
-        city = request.args.get('city', 1, type=int)
-        query_mahal = Mahals.query.filter_by(city_id=city)
-        mahal_response = [{
-            'number':mahal.id,
-            'name': mahal.name
-        } for mahal in query_mahal]
 
-        return jsonify(mahal_response)
+def get_user_neighborhoods_access_2(user_id):
+    try:
+        # ساخت کوئری با select
+        user_classifications = select(UserAccess.classifictions_id).where(
+            UserAccess.user_id == user_id
+        ).scalar_subquery()
+
+        # کوئری اصلی
+        neighborhoods = db.session.query(
+            Neighborhood.name,
+            Classification.name.label('classification_name'),
+            ClassificationNeighborhood.type,
+            ClassificationNeighborhood.neighborhood_id
+        ).join(
+            ClassificationNeighborhood,
+            Neighborhood.id == ClassificationNeighborhood.neighborhood_id
+        ).join(
+            Classification,
+            ClassificationNeighborhood.classifiction_id == Classification.id
+        ).filter(
+            Classification.id.in_(user_classifications)
+        ).all()
+
+        # تبدیل نتایج به دیکشنری
+        result = []
+        for n in neighborhoods:
+            result.append({
+                'neighborhood_name': n.name,
+                'classification_name': n.classification_name,
+                'neighborhood_id': n.neighborhood_id,
+                'access_type': n.type
+            })
+        return result
+
     except Exception as e:
-        print(e)
-        return 500
+        print(f"Error in get_user_neighborhoods_access_2: {str(e)}")
+        return None
+
+
+@searchenign_bp.route('/Search/User/Access', methods=['GET'])
+@jwt_required()
+def Users_Access():
+    try:
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+        user = Users.query.filter_by(phone=user_phone).first()
+
+        #results = get_user_neighborhoods_access_2(user.id)
+        #print(results)
+
+        # دریافت دسته‌بندی‌های کاربر با استفاده از join
+        classifications = db.session.query(Classification)\
+            .join(UserAccess, UserAccess.classifictions_id == Classification.id)\
+            .filter(UserAccess.user_id == user.id)\
+            .all()
+
+
+        results = []
+        for classification in classifications:
+            results.append({
+                'id': classification.id,
+                'name': classification.name,
+                'created_at': classification.created_at.strftime('%Y-%m-%d %H:%M:%S') if classification.created_at else None,
+                'updated_at': classification.updated_at.strftime('%Y-%m-%d %H:%M:%S') if classification.updated_at else None
+            })
+
+        if results is None:
+            return make_response(jsonify({
+                'status': 'error',
+                'message': 'An error occurred while fetching data'
+            }), 500)
+
+        return make_response(jsonify({
+            'status': 'success',
+            'data': results
+        }), 200)
+
+    except Exception as e:
+        return make_response(jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500)
