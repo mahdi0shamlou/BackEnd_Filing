@@ -339,7 +339,6 @@ def users_access():
             'message': str(e)
         }), 500)
 
-
 @searchenign_bp.route('/Search/User/Class', methods=['GET'])
 @jwt_required()
 def users_access_class():
