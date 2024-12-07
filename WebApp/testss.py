@@ -18,7 +18,8 @@ def get_user_neighborhoods_access_2(user_id):
         neighborhoods = db.session.query(
             Neighborhood.name,
             Classification.name.label('classification_name'),
-            ClassificationNeighborhood.type
+            ClassificationNeighborhood.type,
+            ClassificationNeighborhood.neighborhood_id
         ).join(
             ClassificationNeighborhood,
             Neighborhood.id == ClassificationNeighborhood.neighborhood_id
@@ -35,6 +36,7 @@ def get_user_neighborhoods_access_2(user_id):
             result.append({
                 'neighborhood_name': n.name,
                 'classification_name': n.classification_name,
+                'neighborhood_id': n.neighborhood_id,
                 'access_type': n.type
             })
         return result

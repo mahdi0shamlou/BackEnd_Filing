@@ -153,6 +153,8 @@ def search_engine_full_details():
                 mahals = request_data.get('mahal', [])
                 price_from = request_data.get('price_from', None)
                 price_to = request_data.get('price_to', None)
+                price_from_two = request_data.get('price_from_2', None)
+                price_to_two = request_data.get('price_to_2', None)
                 meter_from = request_data.get('meter_from', None)
                 meter_to = request_data.get('meter_to', None)
                 page = request_data.get('page', 1)
@@ -175,6 +177,13 @@ def search_engine_full_details():
                     query = query.filter(Posts.price >= price_from)
                 elif price_to is not None:
                     query = query.filter(Posts.price <= price_to)
+
+                if price_from_two is not None and price_to_two is not None:
+                    query = query.filter(Posts.price_two.between(price_from_two, price_to_two))
+                elif price_from_two is not None:
+                    query = query.filter(Posts.price_two >= price_from_two)
+                elif price_to_two is not None:
+                    query = query.filter(Posts.price_two <= price_to_two)
 
                 if meter_from is not None and meter_to is not None:
                     query = query.filter(Posts.meter.between(meter_from, meter_to))
