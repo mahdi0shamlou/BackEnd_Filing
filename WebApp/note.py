@@ -25,7 +25,7 @@ def validate_note_text(text):
     return bool(re.match(pattern, text))
 
 
-@notes_bp.route('/Notes/List', methods=['GET'])
+@notes_bp.route('/Notes/List', methods=['POST'])
 @jwt_required()
 def notes_user():
     # Get the current logged-in user's phone number from the JWT token
