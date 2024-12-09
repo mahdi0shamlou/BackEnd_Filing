@@ -336,7 +336,7 @@ def users_access():
             'status': 'error',
             'message': str(e)
         }), 500)
-
+"""
 @searchenign_bp.route('/Search/User/Class/OLD', methods=['POST'])
 @jwt_required()
 def users_access_class():
@@ -384,7 +384,7 @@ def users_access_class():
             'status': 'error',
             'message': str(e)
         }), 500)
-
+"""
 @searchenign_bp.route('/Search/User/Class', methods=['POST'])
 @jwt_required()
 def users_access_class_new():
@@ -437,8 +437,7 @@ def users_access_class_new():
 
         neighborhoods_list = [{
             'id': neighborhood.id,
-            'name': neighborhood.name,
-            'city_id': neighborhood.city_id
+            'name': neighborhood.name
         } for neighborhood in neighborhoods]
 
         response = {
