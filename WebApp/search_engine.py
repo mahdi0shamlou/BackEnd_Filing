@@ -228,7 +228,7 @@ def search_engine_full_details():
 
             query = Posts.query.filter(Posts.status == 1)
             query = query.filter(Posts.mahal.in_(allowed_mahals))
-
+            print(allowed_type_ids)
 
             if allowed_type_ids:
                 query = query.filter(Posts.type.in_(allowed_type_ids))
