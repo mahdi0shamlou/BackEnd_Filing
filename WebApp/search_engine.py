@@ -307,7 +307,7 @@ def users_access():
         # دریافت دسته‌بندی‌های کاربر با استفاده از join
         classifications = db.session.query(Classification)\
             .join(UserAccess, UserAccess.classifictions_id == Classification.id)\
-            .filter(UserAccess.user_id == 2)\
+            .filter(UserAccess.user_id == user.id)\
             .all()
 
 
