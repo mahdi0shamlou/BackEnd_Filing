@@ -9,7 +9,7 @@ from models import Posts
 from models import Neighborhood as Mahals
 from sqlalchemy import or_
 from models import db
-from models import Classification, ClassificationNeighborhood, Neighborhood, UserAccess
+from models import Classification, ClassificationNeighborhood, Neighborhood, UserAccess, ClassificationTypes
 from sqlalchemy import select
 #---------------
 
@@ -381,8 +381,8 @@ def users_access_class():
 
 
         # دریافت تایپ‌های منحصر به فرد
-        unique_types = db.session.query(ClassificationNeighborhood.type) \
-            .filter(ClassificationNeighborhood.classifiction_id == classification_id) \
+        unique_types = db.session.query(ClassificationTypes.type) \
+            .filter(ClassificationTypes.classifiction_id == classification_id) \
             .distinct() \
             .all()
 

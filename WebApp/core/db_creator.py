@@ -287,11 +287,23 @@ class DatabaseManager:
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
                 classifiction_id BIGINT(20) NOT NULL,
                 neighborhood_id BIGINT(20) UNSIGNED NOT NULL,
-                type INT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP NULL DEFAULT NULL,
                 FOREIGN KEY (classifiction_id) REFERENCES Classifictions(id) ON DELETE CASCADE,
                 FOREIGN KEY (neighborhood_id) REFERENCES Neighborhoods(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+
+        create_table_query = """
+            CREATE TABLE IF NOT EXISTS Classifictions_Types (
+                id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+                classifiction_id BIGINT(20) NOT NULL,
+                type INT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT NULL,
+                FOREIGN KEY (classifiction_id) REFERENCES Classifictions(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             """
         self.cursor.execute(create_table_query)

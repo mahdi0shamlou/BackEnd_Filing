@@ -114,12 +114,22 @@ class ClassificationNeighborhood(db.Model):
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     classifiction_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
     neighborhood_id = db.Column(db.BigInteger, db.ForeignKey('Neighborhoods.id', ondelete='CASCADE'), nullable=False)
-    type = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
     classification = relationship('Classification', back_populates='neighborhoods')
     neighborhood = relationship('Neighborhood', back_populates='classifications')
+
+class ClassificationTypes(db.Model):
+    __tablename__ = 'Classifictions_Types'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    classifiction_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+    classification = relationship('Classification', back_populates='neighborhoods')
+
 
 class UserAccess(db.Model):
     __tablename__ = 'User_Access'
