@@ -336,55 +336,8 @@ def users_access():
             'status': 'error',
             'message': str(e)
         }), 500)
-"""
-@searchenign_bp.route('/Search/User/Class/OLD', methods=['POST'])
-@jwt_required()
-def users_access_class():
-    try:
-        # Parse JSON body
-        request_data = request.get_json()
-        classification_id = request_data.get('class', 1) # 1 ,2 , 3, 4, 5, 6
-        neighborhoods = db.session.query(Neighborhood).join(ClassificationNeighborhood,ClassificationNeighborhood.neighborhood_id == Neighborhood.id).filter(ClassificationNeighborhood.classifiction_id == classification_id).all()
 
 
-        results = []
-        for neighborhood in neighborhoods:
-            results.append({
-                'value': neighborhood.id,
-                'label': neighborhood.name,
-                #'type': classification_neighborhood.type,
-                'date_created': neighborhood.date_created.strftime(
-                    '%Y-%m-%d %H:%M:%S') if neighborhood.date_created else None
-            })
-
-
-
-        # دریافت تایپ‌های منحصر به فرد
-        unique_types = db.session.query(ClassificationTypes.type) \
-            .filter(ClassificationTypes.classifiction_id == classification_id) \
-            .distinct() \
-            .all()
-
-        # تبدیل نتیجه به لیست ساده
-        types_list = [type_[0] for type_ in unique_types]
-        if results is None:
-            return make_response(jsonify({
-                'status': 'error',
-                'message': 'An error occurred while fetching data'
-            }), 500)
-
-        return make_response(jsonify({
-            'status': 'success',
-            'mahal_user_access': results,
-            'types_user_access' : types_list
-        }), 200)
-
-    except Exception as e:
-        return make_response(jsonify({
-            'status': 'error',
-            'message': str(e)
-        }), 500)
-"""
 @searchenign_bp.route('/Search/User/Class', methods=['POST'])
 @jwt_required()
 def users_access_class_new():
