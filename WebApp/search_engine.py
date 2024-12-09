@@ -13,9 +13,9 @@ from models import Classification, ClassificationNeighborhood, Neighborhood, Use
 
 searchenign_bp = Blueprint('searchenign', __name__)
 
-def check_user_has_accses(user, mahal):
+def check_user_has_accses(user, request):
     print(user)
-    print(mahal)
+    print(request)
     return True
 
 
@@ -30,7 +30,7 @@ def search_engine_less_details():
         current_user = get_jwt_identity()
         user_phone = current_user['phone']
         user = Users.query.filter_by(phone=user_phone).first()
-        check_accses = check_user_has_accses(user, 0)
+        check_accses = check_user_has_accses(user, request)
         if check_accses:
             try:
                 city = request_data.get('city', 1)  # 1 ,2 , 3, 4, 5, 6
@@ -159,7 +159,7 @@ def search_engine_full_details():
         current_user = get_jwt_identity()
         user_phone = current_user['phone']
         user = Users.query.filter_by(phone=user_phone).first()
-        check_accses = check_user_has_accses(user, 0)
+        check_accses = check_user_has_accses(user, request)
         if check_accses:
             try:
                 city = request_data.get('city', 1) # 1 ,2 , 3, 4, 5, 6
