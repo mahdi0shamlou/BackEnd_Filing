@@ -6,11 +6,9 @@ from flask import Blueprint, jsonify, make_response
 #------------- models
 from models import users as Users
 from models import Posts
-from models import Neighborhood as Mahals
 from sqlalchemy import or_
 from models import db
-from models import Classification, ClassificationNeighborhood, Neighborhood, UserAccess, ClassificationTypes
-from sqlalchemy import select
+from models import Classification, ClassificationNeighborhood, Neighborhood, UserAccess, ClassificationTypes, Types_file
 #---------------
 
 searchenign_bp = Blueprint('searchenign', __name__)
@@ -339,37 +337,18 @@ def users_access():
             'message': str(e)
         }), 500)
 
-@searchenign_bp.route('/Search/User/Class', methods=['POST'])
+@searchenign_bp.route('/Search/User/Class/OLD', methods=['POST'])
 @jwt_required()
 def users_access_class():
     try:
         # Parse JSON body
         request_data = request.get_json()
         classification_id = request_data.get('class', 1) # 1 ,2 , 3, 4, 5, 6
-        """        
-        current_user = get_jwt_identity()
-        user_phone = current_user['phone']
-        user = Users.query.filter_by(phone=user_phone).first()
+        neighborhoods = db.session.query(Neighborhood).join(ClassificationNeighborhood,ClassificationNeighborhood.neighborhood_id == Neighborhood.id).filter(ClassificationNeighborhood.classifiction_id == classification_id).all()
 
-        #results = get_user_neighborhoods_access_2(user.id)
-        #print(results)
-        """
-        neighborhoods = db.session.query(Neighborhood) \
-            .join(ClassificationNeighborhood,
-                  ClassificationNeighborhood.neighborhood_id == Neighborhood.id) \
-            .filter(ClassificationNeighborhood.classifiction_id == classification_id) \
-            .all()
 
-        # تبدیل نتایج به دیکشنری
         results = []
         for neighborhood in neighborhoods:
-            """
-            # دریافت نوع محله از جدول میانی
-            classification_neighborhood = ClassificationNeighborhood.query.filter_by(
-                classifiction_id=classification_id,
-                neighborhood_id=neighborhood.id
-            ).first()
-            """
             results.append({
                 'value': neighborhood.id,
                 'label': neighborhood.name,
@@ -406,3 +385,73 @@ def users_access_class():
             'message': str(e)
         }), 500)
 
+@searchenign_bp.route('/Search/User/Class', methods=['POST'])
+@jwt_required()
+def users_access_class_new():
+    try:
+        request_data = request.get_json()
+        classification_id = request_data.get('class', 1)
+
+        # دریافت اطلاعات کاربر از توکن
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+        user = Users.query.filter_by(phone=user_phone).first()
+
+        if not user:
+            return jsonify({
+                'status': 'error',
+                'message': 'کاربر یافت نشد'
+            }), 404
+
+        # چک کردن دسترسی کاربر
+        access = UserAccess.query.filter_by(
+            user_id=user.id,
+            classifictions_id=classification_id
+        ).first()
+
+        if not access:
+            return jsonify({
+                'status': 'error',
+                'message': 'شما دسترسی به این دسته‌بندی ندارید'
+            }), 403
+
+        # Get classification types with their names
+        types = (db.session.query(
+            ClassificationTypes.type,
+            Types_file.name.label('type_name')
+        )
+                 .join(Types_file, ClassificationTypes.type == Types_file.id)
+                 .filter(ClassificationTypes.classifiction_id == classification_id)
+                 .all())
+
+        types_list = [{
+            'id': type.type,
+            'name': type.type_name
+        } for type in types]
+
+        # Get neighborhoods through ClassificationNeighborhood
+        neighborhoods = (db.session.query(Neighborhood)
+                         .join(ClassificationNeighborhood)
+                         .filter(ClassificationNeighborhood.classifiction_id == classification_id)
+                         .all())
+
+        neighborhoods_list = [{
+            'id': neighborhood.id,
+            'name': neighborhood.name,
+            'city_id': neighborhood.city_id
+        } for neighborhood in neighborhoods]
+
+        response = {
+            'status': 'success',
+            'data': {
+                'types': types_list,
+                'neighborhoods': neighborhoods_list
+            }
+        }
+
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
