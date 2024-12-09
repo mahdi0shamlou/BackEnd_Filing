@@ -16,6 +16,11 @@ searchenign_bp = Blueprint('searchenign', __name__)
 def check_user_has_accses(user, request):
     print(user)
     print(request)
+
+    request_data = request.get_json()
+    class_id = request_data.get('class', 1)
+
+
     return True
 
 
