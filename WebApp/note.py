@@ -159,3 +159,58 @@ def create_note():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "خطا در ایجاد نوت"}), 500
+
+@notes_bp.route('/Notes/Edit', methods=['PUT'])
+@jwt_required()
+def edit_note():
+    # دریافت اطلاعات کاربر فعلی از توکن JWT
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    # پیدا کردن کاربر در دیتابیس
+    user = Users.query.filter_by(phone=user_phone).first()
+
+    if not user:
+        return jsonify({"message": "خطا کاربر مورد نظر یافت نشد!"}), 404
+
+    # دریافت داده‌های ارسالی
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"message": "داده‌ای دریافت نشد!"}), 400
+
+    note_id = data.get('note_id')
+    new_note_text = data.get('note')
+
+    # بررسی وجود فیلدهای ضروری
+    if not note_id or not new_note_text:
+        return jsonify({"message": "لطفا تمام فیلدهای ضروری را وارد کنید!"}), 400
+
+    # اعتبارسنجی متن نوت جدید
+    if not validate_note_text(new_note_text):
+        return jsonify({"message": "متن نوت نامعتبر است!"}), 400
+
+    # پیدا کردن یادداشت مورد نظر
+    note = Notes.query.filter_by(id=note_id, user_id_created=user.id).first()
+
+    if not note:
+        return jsonify({"message": "یادداشت مورد نظر یافت نشد یا شما اجازه ویرایش آن را ندارید!"}), 404
+
+    try:
+        # بروزرسانی متن یادداشت
+        note.note = new_note_text
+        db.session.commit()
+
+        return jsonify({
+            "message": "یادداشت با موفقیت ویرایش شد",
+            "note": {
+                "id": note.id,
+                "note": note.note,
+                "created_at": note.created_at,
+                "updated_at": note.updated_at
+            }
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "خطا در ویرایش یادداشت"}), 500
