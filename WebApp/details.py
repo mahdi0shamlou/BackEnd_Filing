@@ -46,6 +46,7 @@ def details_file():
                     'PARKING': query.PARKING,
                     'CABINET': query.CABINET,
                     'ELEVATOR': query.ELEVATOR,
+                    'BALCONY': query.BALCONY,
                     'Otagh': query.Otagh,
                     'Make_years': query.Make_years,
                     'phone': query.number,
@@ -54,7 +55,8 @@ def details_file():
                     'token': query.token,
                     'desck': query.desck,
                     'details': query.details,
-                    'date_created_persian':query.date_created_persian
+                    'date_created_persian':query.date_created_persian,
+                    'date_created': query.date_created
                 }]
 
                 response_data = {

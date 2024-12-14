@@ -303,6 +303,7 @@ def search_engine_full_details():
                 'PARKING': query.PARKING,
                 'CABINET': query.CABINET,
                 'ELEVATOR': query.ELEVATOR,
+                'BALCONY': query.BALCONY,
                 'Otagh': query.Otagh,
                 'Make_years': query.Make_years,
                 'phone': query.number,
