@@ -65,6 +65,64 @@ def create_zoonkan():
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در ایجاد زونکن"}), 500
 
+@zoonkan_bp.route('/ZoonKan/Edit', methods=['PUT'])
+@jwt_required()
+def edit_name_zoonkan():
+    # دریافت اطلاعات کاربر فعلی از توکن JWT
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    # پیدا کردن کاربر در دیتابیس
+    user = Users.query.filter_by(phone=user_phone).first()
+
+    if not user:
+        return jsonify({"message": "خطا کاربر مورد نظر یافت نشد!"}), 404
+
+    # دریافت داده‌های ارسالی
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"message": "داده‌ای دریافت نشد!"}), 400
+
+    zoonkan_id = data.get('zoonkan_id')
+    new_name = data.get('name')
+
+    # بررسی وجود فیلدهای ضروری
+    if not zoonkan_id or not new_name:
+        return jsonify({"message": "لطفا تمام فیلدهای ضروری را وارد کنید!"}), 400
+
+    # اعتبارسنجی نام جدید زونکن
+    if len(new_name) < 3 or len(new_name) > 191:
+        return jsonify({"message": "نام زونکن باید بین 3 تا 191 کاراکتر باشد!"}), 400
+
+    # بررسی وجود زونکن
+    zoonkan = ZoonKan.query.get(zoonkan_id)
+    if not zoonkan:
+        return jsonify({"message": "زونکن مورد نظر یافت نشد!"}), 404
+
+    # بررسی مالکیت زونکن
+    if zoonkan.user_id_created != user.id:
+        return jsonify({"message": "شما اجازه دسترسی به این زونکن را ندارید!"}), 403
+
+    try:
+        # بروزرسانی نام زونکن
+        zoonkan.name = new_name
+        db.session.commit()
+
+        return jsonify({
+            "message": "نام زونکن با موفقیت بروزرسانی شد",
+            "zoonkan": {
+                "id": zoonkan.id,
+                "name": zoonkan.name,
+                "updated_at": zoonkan.updated_at.isoformat()
+            }
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(str(e))  # برای دیباگ
+        return jsonify({"message": "خطا در بروزرسانی نام زونکن"}), 500
+
 @zoonkan_bp.route('/ZoonKan/AddFile', methods=['POST'])
 @jwt_required()
 def add_file_to_zoonkan():
@@ -134,7 +192,6 @@ def add_file_to_zoonkan():
         db.session.rollback()
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در اضافه کردن فایل به زونکن"}), 500
-
 
 @zoonkan_bp.route('/ZoonKan/List', methods=['GET'])
 @jwt_required()
