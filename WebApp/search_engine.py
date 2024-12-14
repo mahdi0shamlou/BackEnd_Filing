@@ -170,7 +170,8 @@ def search_engine_less_details():
                 'mahal': post.mahal_text,
                 'meter': post.meter,
                 'token': post.token,
-                'desck': post.desck[:30]
+                'desck': post.desck[:30],
+                'date_created': query.date_created
             } for post in posts]
 
             response_data = {
@@ -310,7 +311,8 @@ def search_engine_full_details():
                 'token': query.token,
                 'desck': query.desck,
                 'details': query.details,
-                'date_created_persian':query.date_created_persian
+                'date_created_persian':query.date_created_persian,
+                'date_created': query.date_created
             } for query in posts]
 
             response_data = {
