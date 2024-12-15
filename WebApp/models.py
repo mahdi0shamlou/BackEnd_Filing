@@ -160,9 +160,6 @@ class FactorAccess(db.Model):
     expired_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-    
-    classification = relationship('Classification', back_populates='factor_access')
-
 
 
 class UserAccess(db.Model):
