@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-import datetime
+from datetime import datetime, timedelta
 # -------------jwt tokens
 from flask_jwt_extended import jwt_required, get_jwt_identity
 # -------------
@@ -65,8 +65,13 @@ def create_factor():
         factor_type = data.get('type')
         number = data.get('number', 1)
         price = data.get('price')
-        time_delta = data.get('time_delta', 30)
-        now = datetime.datetime.now()
+        time_delta = data.get('time_delta', 30)  # اگر داده‌ای وجود نداشته باشد، پیش‌فرض 30 خواهد بود
+        if time_delta not in [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]:
+            return jsonify({"message": "خطا در ایجاد فاکتور تعداد روز ها باید به ماه باشد"}), 500
+        # زمان فعلی
+        now = datetime.now()
+        # محاسبه تاریخ جدید با اضافه کردن time_delta به زمان فعلی
+        new_date = now + timedelta(days=time_delta)
 
         # اعتبارسنجی مقدماتی
         if not all([factor_type, price]):
@@ -79,7 +84,7 @@ def create_factor():
             type=factor_type,
             number=number,
             price=price,
-            expired_at=now
+            expired_at=new_date
         )
 
         db.session.add(new_factor)
@@ -102,3 +107,35 @@ def create_factor():
         db.session.rollback()
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در ایجاد فاکتور"}), 500
+
+@factors_bp.route('/Factors/Delete/<int:factor_id>', methods=['DELETE'])
+@jwt_required()
+def delete_factor(factor_id):
+    # دریافت اطلاعات کاربر فعلی از توکن JWT
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    # پیدا کردن کاربر در دیتابیس
+    user = Users.query.filter_by(phone=user_phone).first()
+
+    try:
+        # پیدا کردن فاکتور بر اساس ID و کاربر جاری
+        factor = Factor.query.filter_by(id=factor_id, user_id=user.id).first()
+
+        if not factor:
+            return jsonify({"message": "فاکتور مورد نظر یافت نشد"}), 404
+
+        # بررسی وضعیت فاکتور
+        if factor.status not in [0, 2]:
+            return jsonify({"message": "فقط فاکتورهایی با وضعیت عدم پرداخت یا مهلت پرداخت تمام شده قابل حذف هستند"}), 400
+
+        # حذف فاکتور
+        db.session.delete(factor)
+        db.session.commit()
+
+        return jsonify({"message": "فاکتور با موفقیت حذف شد"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(str(e))  # برای دیباگ
+        return jsonify({"message": "خطا در حذف فاکتور"}), 500
