@@ -139,3 +139,25 @@ def delete_factor(factor_id):
         db.session.rollback()
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در حذف فاکتور"}), 500
+
+#--------------------------------------
+
+@factors_bp.route('/Factors/Price', methods=['GET'])
+@jwt_required()
+def get_factors_price():
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"message": "داده‌ای دریافت نشد!"}), 400
+
+        factor_type = data.get('type')
+        number = data.get('number', 1)
+        classifications = data.get('classifications', [])
+
+        price = 1000
+        return jsonify({"Prices": price}), 200
+
+    except Exception as e:
+        print(str(e))  # برای دیباگ
+        return jsonify({"message": "خطا در دریافت قیمت"}), 500
