@@ -162,7 +162,7 @@ class FactorAccess(db.Model):
 
     user = relationship('users', back_populates='factor_access')
     classification = relationship('Classification', back_populates='factor_access')
-    factor = relationship('Factor', back_populates='factor_access')
+    
 
 
 class UserAccess(db.Model):
