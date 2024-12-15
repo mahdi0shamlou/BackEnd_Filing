@@ -147,8 +147,8 @@ class Factor(db.Model):
     expired_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-    user = relationship('users', back_populates='factors')
-    factor_access = relationship('FactorAccess', back_populates='factor', cascade='all, delete-orphan')
+
+
 
 class FactorAccess(db.Model):
     __tablename__ = 'Factor_Access'
@@ -160,9 +160,9 @@ class FactorAccess(db.Model):
     expired_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-    user = relationship('users', back_populates='factor_access')
-    classification = relationship('Classification', back_populates='factor_access')
     
+    classification = relationship('Classification', back_populates='factor_access')
+
 
 
 class UserAccess(db.Model):
