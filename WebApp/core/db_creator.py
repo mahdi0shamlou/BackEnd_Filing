@@ -368,9 +368,9 @@ class DatabaseManager:
         create_table_query = """
             CREATE TABLE IF NOT EXISTS User_Access (
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
-                factor_id BIGINT(20) UNSIGNED NOT NULL,
+                factor_id BIGINT(20) NOT NULL,
                 user_id BIGINT(20) UNSIGNED NOT NULL,
-                classifictions_id BIGINT(20) UNSIGNED NOT NULL,
+                classifictions_id BIGINT(20)  NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 expired_at TIMESTAMP NOT NULL,
                 updated_at TIMESTAMP NULL DEFAULT NULL,
