@@ -323,21 +323,69 @@ class DatabaseManager:
         #---------- End classifire
         # ----------------------------
         #----------------------------
-        #---------- Start user Access
+        #---------- Start user Access And Factors
         # ----------------------------
+
+        #types of Factors
+        """
+        1 : singel
+        2 : group
+        """
         create_table_query = """
-            CREATE TABLE IF NOT EXISTS User_Access (
+            CREATE TABLE IF NOT EXISTS Factors (
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
                 user_id BIGINT(20) UNSIGNED NOT NULL,
-                classifictions_id BIGINT(20) UNSIGNED NOT NULL,
+                status INT NOT NULL,
+                type INT NOT NULL,
+                number INT NOT NULL DEFAULT 1,
+                price BIGINT(20) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                expired_at TIMESTAMP NOT NULL,
                 updated_at TIMESTAMP NULL DEFAULT NULL,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-                FOREIGN KEY (classifictions_id) REFERENCES Classifictions(id) ON DELETE CASCADE
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             """
         self.cursor.execute(create_table_query)
         self.connection.commit()
+
+        create_table_query = """
+            CREATE TABLE IF NOT EXISTS Factor_Access (
+                id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+                factor_id BIGINT(20) UNSIGNED NOT NULL,
+                user_id BIGINT(20) UNSIGNED NOT NULL,
+                classifictions_id BIGINT(20) UNSIGNED NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                expired_at TIMESTAMP NOT NULL,
+                updated_at TIMESTAMP NULL DEFAULT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (classifictions_id) REFERENCES Classifictions(id) ON DELETE CASCADE,
+                FOREIGN KEY (factor_id) REFERENCES Factors(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+
+        create_table_query = """
+            CREATE TABLE IF NOT EXISTS User_Access (
+                id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+                factor_id BIGINT(20) UNSIGNED NOT NULL,
+                user_id BIGINT(20) UNSIGNED NOT NULL,
+                classifictions_id BIGINT(20) UNSIGNED NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                expired_at TIMESTAMP NOT NULL,
+                updated_at TIMESTAMP NULL DEFAULT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (classifictions_id) REFERENCES Classifictions(id) ON DELETE CASCADE,
+                FOREIGN KEY (factor_id) REFERENCES Factors(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+
+        # ----------------------------
+        # ---------- End user accses And Factors
+        # ----------------------------
+
 
 
     def close(self):
