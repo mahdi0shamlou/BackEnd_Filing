@@ -147,9 +147,6 @@ class Factor(db.Model):
     expired_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-
-
-
 class FactorAccess(db.Model):
     __tablename__ = 'Factor_Access'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
@@ -160,8 +157,6 @@ class FactorAccess(db.Model):
     expired_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-
-
 class UserAccess(db.Model):
     __tablename__ = 'User_Access'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
@@ -170,6 +165,7 @@ class UserAccess(db.Model):
     classifictions_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+    expired_at = db.Column(db.DateTime, nullable=False)
 
     user = relationship('users', back_populates='user_access')  # حذف backref و استفاده از back_populates
     classification = relationship('Classification', back_populates='user_access')
