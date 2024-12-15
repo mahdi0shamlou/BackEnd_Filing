@@ -9,6 +9,15 @@ from models import db
 from models import Factor
 
 # ---------------
+# def price
+# ---------------
+def Get_price(data):
+    factor_type = data.get('type')
+    number = data.get('number', 1)
+    classifications = data.get('classifications', [])
+
+    price = 1000
+    return price
 
 factors_bp = Blueprint('factor', __name__)
 
@@ -64,7 +73,6 @@ def create_factor():
         # واکشی و اعتبارسنجی اطلاعات فاکتور
         factor_type = data.get('type')
         number = data.get('number', 1)
-        price = data.get('price')
         time_delta = data.get('time_delta', 30)  # اگر داده‌ای وجود نداشته باشد، پیش‌فرض 30 خواهد بود
         if time_delta not in [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]:
             return jsonify({"message": "خطا در ایجاد فاکتور تعداد روز ها باید به ماه باشد"}), 500
@@ -74,7 +82,7 @@ def create_factor():
         new_date = now + timedelta(days=time_delta)
 
         # اعتبارسنجی مقدماتی
-        if not all([factor_type, price]):
+        if not all([factor_type]):
             return jsonify({"message": "تمام فیلدهای مورد نظر را وارد کنید!"}), 400
 
         # ایجاد فاکتور جدید
@@ -83,7 +91,7 @@ def create_factor():
             status=0,
             type=factor_type,
             number=number,
-            price=price,
+            price=Get_price(data),
             expired_at=new_date
         )
 
@@ -141,21 +149,18 @@ def delete_factor(factor_id):
         return jsonify({"message": "خطا در حذف فاکتور"}), 500
 
 #--------------------------------------
+# Routes Of Prices
+#--------------------------------------
 
 @factors_bp.route('/Factors/Price', methods=['GET'])
 @jwt_required()
 def get_factors_price():
     try:
         data = request.get_json()
-
         if not data:
             return jsonify({"message": "داده‌ای دریافت نشد!"}), 400
 
-        factor_type = data.get('type')
-        number = data.get('number', 1)
-        classifications = data.get('classifications', [])
-
-        price = 1000
+        price = Get_price(data)
         return jsonify({"Prices": price}), 200
 
     except Exception as e:
