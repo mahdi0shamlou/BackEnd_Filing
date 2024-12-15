@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, request
-import re
 # -------------jwt tokens
 from flask_jwt_extended import jwt_required, get_jwt_identity
 # -------------

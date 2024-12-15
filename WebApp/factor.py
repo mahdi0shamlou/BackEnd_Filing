@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-import re
+import datetime
 # -------------jwt tokens
 from flask_jwt_extended import jwt_required, get_jwt_identity
 # -------------
@@ -65,10 +65,11 @@ def create_factor():
         factor_type = data.get('type')
         number = data.get('number', 1)
         price = data.get('price')
-        expired_at = data.get('expired_at')
+        time_delta = data.get('time_delta', 30)
+        now = datetime.datetime.now()
 
         # اعتبارسنجی مقدماتی
-        if not all([factor_type, price, expired_at]):
+        if not all([factor_type, price]):
             return jsonify({"message": "تمام فیلدهای مورد نظر را وارد کنید!"}), 400
 
         # ایجاد فاکتور جدید
@@ -78,7 +79,7 @@ def create_factor():
             type=factor_type,
             number=number,
             price=price,
-            expired_at=expired_at
+            expired_at=now
         )
 
         db.session.add(new_factor)
