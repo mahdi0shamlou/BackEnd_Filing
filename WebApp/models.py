@@ -135,9 +135,40 @@ class Types_file(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
+class Factor(db.Model):
+    __tablename__ = 'Factors'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    status = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.Integer, nullable=False)
+    number = db.Column(db.Integer, nullable=False, default=1)
+    price = db.Column(db.BigInteger, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    expired_at = db.Column(db.DateTime, nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+    user = relationship('users', back_populates='factors')
+    factor_access = relationship('FactorAccess', back_populates='factor', cascade='all, delete-orphan')
+
+class FactorAccess(db.Model):
+    __tablename__ = 'Factor_Access'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    classifictions_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    expired_at = db.Column(db.DateTime, nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+    user = relationship('users', back_populates='factor_access')
+    classification = relationship('Classification', back_populates='factor_access')
+    factor = relationship('Factor', back_populates='factor_access')
+
+
 class UserAccess(db.Model):
     __tablename__ = 'User_Access'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     classifictions_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
