@@ -171,7 +171,7 @@ def search_engine_less_details():
                 'meter': post.meter,
                 'token': post.token,
                 'desck': post.desck[:30],
-                'date_created': query.date_created
+                'date_created': post.date_created
             } for post in posts]
 
             response_data = {

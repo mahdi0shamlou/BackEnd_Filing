@@ -7,16 +7,16 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import users as Users
 from models import db
 from models import Factor
-
 # ---------------
 # def price
 # ---------------
+
 def Get_price(data):
     factor_type = data.get('type')
     number = data.get('number', 1)
     classifications = data.get('classifications', [])
     time_delta = data.get('time_delta', 30)
-    
+
     price = 1000
     return price
 
@@ -167,3 +167,4 @@ def get_factors_price():
     except Exception as e:
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در دریافت قیمت"}), 500
+
