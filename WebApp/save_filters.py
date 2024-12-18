@@ -103,7 +103,7 @@ def delete_search_filter(filter_id):
 
 
 # ------------- Update Filter Route
-@savefilter_bp.route('/Search/UpdateFilter/<int:filter_id>', methods=['PUT'])
+@savefilter_bp.route('/Search/UpdateFilter/<int:filter_id>', methods=['POST'])
 @jwt_required()
 def update_search_filter(filter_id):
     try:
