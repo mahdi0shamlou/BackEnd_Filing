@@ -389,6 +389,7 @@ class DatabaseManager:
                 CREATE TABLE search_filters (
                         id BIGINT PRIMARY KEY AUTO_INCREMENT,
                         user_id BIGINT(20) UNSIGNED NOT NULL,
+                        filter_name VARCHAR(191) NOT NULL,
                         filters JSON NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

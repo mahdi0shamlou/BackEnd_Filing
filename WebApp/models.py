@@ -67,6 +67,7 @@ class SearchFilter(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
+    filter_name = db.Column(db.String(191), nullable=True)
     filters = db.Column(JSON, nullable=False)  # Store the filters as JSON data
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
