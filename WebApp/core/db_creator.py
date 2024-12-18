@@ -385,7 +385,17 @@ class DatabaseManager:
         # ----------------------------
         # ---------- End user accses And Factors
         # ----------------------------
-
+        create_table_query = """
+                CREATE TABLE search_filters (
+                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                        user_id BIGINT(20) UNSIGNED NOT NULL,
+                        filters JSON NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
 
 
     def close(self):
