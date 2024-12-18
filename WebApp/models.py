@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import TINYINT
 from datetime import datetime
 from sqlalchemy.orm import relationship
-
+from sqlalchemy.dialects.postgresql import JSON
 
 db = SQLAlchemy()
 
@@ -61,6 +61,14 @@ class Posts(db.Model):
     date_created_persian = db.Column(db.String(20))
     date_created = db.Column(db.DateTime, default= datetime.now())  # Use datetime.utcnow for default value
     files_in_zoonkan = relationship('FilesInZoonKan', back_populates='post', cascade='all, delete-orphan')
+
+class SearchFilter(db.Model):
+    __tablename__ = 'search_filters'
+
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
+    filters = db.Column(JSON, nullable=False)  # Store the filters as JSON data
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Notes(db.Model):
     __tablename__ = 'Notes'
