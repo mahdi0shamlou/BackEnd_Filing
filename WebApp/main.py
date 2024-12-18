@@ -14,6 +14,7 @@ from details import details_bp
 from note import notes_bp
 from zoonkan import zoonkan_bp
 from factor import factors_bp
+from save_filters import savefilter_bp
 #-----------------
 
 
@@ -58,6 +59,7 @@ app.register_blueprint(details_bp)
 app.register_blueprint(notes_bp)
 app.register_blueprint(zoonkan_bp)
 app.register_blueprint(factors_bp)
+app.register_blueprint(savefilter_bp)
 
 
 @jwt.expired_token_loader
