@@ -71,6 +71,18 @@ class SearchFilter(db.Model):
     filters = db.Column(JSON, nullable=False)  # Store the filters as JSON data
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+class SaveCustomer(db.Model):
+    __tablename__ = 'users_customer'
+
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id'), nullable=False)
+    customer_name = db.Column(db.String(191), nullable=True)
+    customer_data = db.Column(JSON, nullable=False)  # Store the filters as JSON data
+    phone = db.Column(db.String(20), nullable=False)
+    desck = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
 class Notes(db.Model):
     __tablename__ = 'Notes'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
