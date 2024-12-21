@@ -142,6 +142,7 @@ def list_customers():
             customer_list.append({
                 "id": customer.id,
                 "customer_name": customer.customer_name,
+                "customer_data": customer.customer_data,
                 "phone": customer.phone,
                 "desck": customer.desck,
                 "created_at": customer.created_at,
