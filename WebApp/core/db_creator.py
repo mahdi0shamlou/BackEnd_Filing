@@ -385,6 +385,9 @@ class DatabaseManager:
         # ----------------------------
         # ---------- End user accses And Factors
         # ----------------------------
+        # ----------------------------
+        # ---------- Start Save search_filters
+        # ----------------------------
         create_table_query = """
                 CREATE TABLE search_filters (
                         id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -397,7 +400,27 @@ class DatabaseManager:
         """
         self.cursor.execute(create_table_query)
         self.connection.commit()
-
+        # ----------------------------
+        # ---------- End Save search_filters
+        # ----------------------------
+        # ----------------------------
+        # ---------- Start Save customer
+        # ----------------------------
+        create_table_query = """
+                CREATE TABLE users_customer (
+                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                        user_id BIGINT(20) UNSIGNED NOT NULL,
+                        customer_name VARCHAR(191) NOT NULL,
+                        customer_data JSON NOT NULL,
+                        phone VARCHAR(20) NOT NULL UNIQUE,
+                        desck TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NULL DEFAULT NULL,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
 
     def close(self):
         self.cursor.close()
