@@ -205,7 +205,7 @@ class FactorAccess(db.Model): # این جدول دسترسی هر فاکتور �
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    classifictions_for_factors_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
+    classifictions_for_factors_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions_FOR_Factors.id', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     expired_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())

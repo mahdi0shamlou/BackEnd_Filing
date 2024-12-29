@@ -1,3 +1,5 @@
+from os import access
+
 from flask import Blueprint, jsonify, request
 from datetime import datetime, timedelta
 # -------------jwt tokens
@@ -252,3 +254,76 @@ def did_factors(factor_id):
 #--------------------------------------
 # Routes Of manage factors
 #--------------------------------------
+
+@factors_bp.route('/Factors/Mange/<int:factor_id>', methods=['GET'])
+@jwt_required()
+def manage_factors(factor_id):
+    try:
+        # دریافت اطلاعات کاربر فعلی از توکن JWT
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+
+        # پیدا کردن کاربر در دیتابیس
+        user = Users.query.filter_by(phone=user_phone).first()
+
+
+        # پیدا کردن فاکتورهای مربوط به کاربر فعلی
+        factor = Factor.query.filter_by(id=factor_id, user_id=user.id).first()
+        if not factor or factor.status != 1:
+            return jsonify({"message": "فاکتور مورد نظر یافت نشد"}), 404
+
+
+        factor_acsess = FactorAccess.query.filter_by(factor_id=factor.id).all()
+        acsess_dict = []
+        for factor_acsess_one in factor_acsess:
+            acsess = Classifictions_FOR_Factors.query.filter_by(id=factor_acsess_one.classifictions_for_factors_id).first()
+            acsess_dict.append({"name":acsess.name, "ids":acsess.id})
+        factors_dict = {
+            "id": factor.id,
+            "status": factor.status,
+            "type": factor.type,
+            "number": factor.number,
+            "price": factor.price,
+            "created_at": factor.created_at.isoformat(),
+            "expired_at": factor.expired_at.isoformat()
+        }
+        return jsonify({"factor": factors_dict, "factor_acsess" : acsess_dict}), 200
+
+    except Exception as e:
+        print(str(e))  # برای دیباگ
+        return jsonify({"message": "خطا در دریافت پول با پشتیبانی تماس بگیرید"}), 500
+
+@factors_bp.route('/Factors/List/User/<int:factor_id>', methods=['GET'])
+@jwt_required()
+def manage_factors_list(factor_id):
+    try:
+        # دریافت اطلاعات کاربر فعلی از توکن JWT
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+
+        # پیدا کردن کاربر در دیتابیس
+        user = Users.query.filter_by(phone=user_phone).first()
+
+
+        # پیدا کردن فاکتورهای مربوط به کاربر فعلی
+        factor = Factor.query.filter_by(id=factor_id, user_id=user.id).first()
+        if not factor or factor.status != 1:
+            return jsonify({"message": "فاکتور مورد نظر یافت نشد"}), 404
+        reterun_list_users = []
+        users_in_access = db.session.query(Users_in_Factors_Acsess, Users).join(
+            Users, Users_in_Factors_Acsess.user_id == Users.id
+        ).filter(Users_in_Factors_Acsess.factor_id == factor_id).all()
+        unique_users = {}
+        for access, user_data in users_in_access:
+            # If the user_id is not in the set, add it to the dictionary
+            if user_data.id not in unique_users:
+                unique_users[user_data.id] = {
+                    "user_id": user_data.id,
+                    "user_phone": user_data.phone,
+                    "user_name": user_data.name
+                }
+        return unique_users
+
+    except Exception as e:
+        print(str(e))  # برای دیباگ
+        return jsonify({"message": "خطا در دریافت پول با پشتیبانی تماس بگیرید"}), 500
