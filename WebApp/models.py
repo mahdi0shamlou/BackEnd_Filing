@@ -120,6 +120,25 @@ class FilesInZoonKan(db.Model):
     post = relationship('Posts', back_populates='files_in_zoonkan')
     zoonkan = relationship('ZoonKan', back_populates='files')
 
+#------------------------------
+#-------- Factors and Users Acsess
+#------------------------------
+class Classifictions_FOR_Factors(db.Model):
+    __tablename__ = 'Classifictions_FOR_Factors'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(191), nullable=False)
+    price = db.Column(db.BigInteger, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+class PER_Classifictions_FOR_Factors(db.Model):
+    __tablename__ = 'PER_Classifictions_FOR_Factors'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    Classifictions_id_created = db.Column(db.String(191), nullable=False)
+    Classifictions_FOR_Factors_id_created = db.Column(db.BigInteger, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
 class Classification(db.Model):
     __tablename__ = 'Classifictions'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
@@ -156,6 +175,19 @@ class Types_file(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
+class UserAccess(db.Model):
+    __tablename__ = 'User_Access'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    classifictions_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+    expired_at = db.Column(db.DateTime, nullable=False)
+
+    user = relationship('users', back_populates='user_access')  # حذف backref و استفاده از back_populates
+    classification = relationship('Classification', back_populates='user_access')
+
 class Factor(db.Model):
     __tablename__ = 'Factors'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
@@ -177,19 +209,6 @@ class FactorAccess(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     expired_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
-
-class UserAccess(db.Model):
-    __tablename__ = 'User_Access'
-    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
-    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    classifictions_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now())
-    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
-    expired_at = db.Column(db.DateTime, nullable=False)
-
-    user = relationship('users', back_populates='user_access')  # حذف backref و استفاده از back_populates
-    classification = relationship('Classification', back_populates='user_access')
 
 class Neighborhood(db.Model):
     __tablename__ = 'Neighborhoods'

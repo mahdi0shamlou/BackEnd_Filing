@@ -281,7 +281,6 @@ class DatabaseManager:
             """
         self.cursor.execute(create_table_query)
         self.connection.commit()
-
         create_table_query = """
             CREATE TABLE IF NOT EXISTS Classifictions_Neighborhoods (
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
@@ -295,7 +294,6 @@ class DatabaseManager:
             """
         self.cursor.execute(create_table_query)
         self.connection.commit()
-
         create_table_query = """
             CREATE TABLE IF NOT EXISTS Classifictions_Types (
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
@@ -308,13 +306,36 @@ class DatabaseManager:
             """
         self.cursor.execute(create_table_query)
         self.connection.commit()
-
         create_table_query = """
             CREATE TABLE IF NOT EXISTS Types_file (
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(191) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP NULL DEFAULT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+        create_table_query = """
+            CREATE TABLE IF NOT EXISTS Classifictions_FOR_Factors (
+                id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(191) NOT NULL,
+                price BIGINT(20) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS PER_Classifictions_FOR_Factors (
+                id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+                Classifictions_id_created BIGINT(20) NOT NULL,
+                Classifictions_FOR_Factors_id_created BIGINT(20) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT NULL,
+                FOREIGN KEY (Classifictions_id_created) REFERENCES Classifictions(id) ON DELETE CASCADE,
+                FOREIGN KEY (Classifictions_FOR_Factors_id_created) REFERENCES Classifictions_FOR_Factors(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             """
         self.cursor.execute(create_table_query)
@@ -353,12 +374,12 @@ class DatabaseManager:
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
                 factor_id BIGINT(20) NOT NULL,
                 user_id BIGINT(20) UNSIGNED NOT NULL,
-                classifictions_id BIGINT(20) NOT NULL,
+                classifictions_for_factors_id BIGINT(20) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 expired_at TIMESTAMP NOT NULL,
                 updated_at TIMESTAMP NULL DEFAULT NULL,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-                FOREIGN KEY (classifictions_id) REFERENCES Classifictions(id) ON DELETE CASCADE,
+                FOREIGN KEY (classifictions_for_factors_id) REFERENCES Classifictions_FOR_Factors(id) ON DELETE CASCADE,
                 FOREIGN KEY (factor_id) REFERENCES Factors(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             """
