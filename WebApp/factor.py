@@ -5,10 +5,12 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 # -------------
 # ------------- models
 from models import users as Users
+from models import UserAccess
 from models import db
 from models import Factor
 from models import Classifictions_FOR_Factors
 from models import FactorAccess
+from models import PER_Classifictions_FOR_Factors, Users_in_Factors_Acsess
 # ---------------
 # def price
 # ---------------
@@ -192,7 +194,7 @@ def get_factors_price():
 @jwt_required()
 def do_factors(factor_id):
     try:
-        return jsonify({"factors": "LINK"}), 200
+        return jsonify({"factors": f"LINK//{factor_id}"}), 200
     except Exception as e:
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در دریافت فاکتور"}), 500
@@ -201,8 +203,52 @@ def do_factors(factor_id):
 @jwt_required()
 def did_factors(factor_id):
     try:
-        
-        return jsonify({"factors": "LINK"}), 200
+        # دریافت اطلاعات کاربر فعلی از توکن JWT
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+
+        # پیدا کردن کاربر در دیتابیس
+        user = Users.query.filter_by(phone=user_phone).first()
+
+
+        # پیدا کردن فاکتورهای مربوط به کاربر فعلی
+        factor = Factor.query.filter_by(id=factor_id, user_id=user.id).first()
+        if not factor or factor.status == 1:
+            return jsonify({"message": "فاکتور مورد نظر یافت نشد و یا قبلا پرداخت شده"}), 404
+        print(factor.status)
+        factor.status = 1
+        db.session.commit()
+
+        factor_acsess = FactorAccess.query.filter_by(factor_id=factor.id).all()
+        for factor_acsess_one in factor_acsess:
+            Users_in_Factors_Acsess_new = Users_in_Factors_Acsess(
+                user_id=user.id,
+                factor_id=factor.id,
+                Classifictions_id=factor_acsess_one.classifictions_for_factors_id,
+                expired_at=factor.expired_at
+            )
+            db.session.add(Users_in_Factors_Acsess_new)
+
+            classifictions_for_factors_id = factor_acsess_one.classifictions_for_factors_id
+            classifictions_user_accsess = PER_Classifictions_FOR_Factors.query.filter_by(Classifictions_FOR_Factors_id_created=classifictions_for_factors_id).all()
+            for i in classifictions_user_accsess:
+                print(i.Classifictions_id_created)
+                new_user_acsses = UserAccess(
+                    factor_id=factor.id,
+                    user_id=user.id,
+                    classifictions_id=i.Classifictions_id_created,
+                    expired_at=factor.expired_at
+                )
+                db.session.add(new_user_acsses)
+                db.session.commit()
+
+
+        return jsonify({"factors": "True"}), 200
+
     except Exception as e:
         print(str(e))  # برای دیباگ
-        return jsonify({"message": "خطا در دریافت فاکتور"}), 500
+        return jsonify({"message": "خطا در دریافت پول با پشتیبانی تماس بگیرید"}), 500
+
+#--------------------------------------
+# Routes Of manage factors
+#--------------------------------------

@@ -123,7 +123,7 @@ class FilesInZoonKan(db.Model):
 #------------------------------
 #-------- Factors and Users Acsess
 #------------------------------
-class Classifictions_FOR_Factors(db.Model):
+class Classifictions_FOR_Factors(db.Model): # در این جدول طبقه بندی های دسته بندی ها وجود دارند با نام و قیمت
     __tablename__ = 'Classifictions_FOR_Factors'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     name = db.Column(db.String(191), nullable=False)
@@ -131,15 +131,15 @@ class Classifictions_FOR_Factors(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-class PER_Classifictions_FOR_Factors(db.Model):
+class PER_Classifictions_FOR_Factors(db.Model): # در این جدول به هر طبقه بندی دسته بندی های جدا الصاق شده اند
     __tablename__ = 'PER_Classifictions_FOR_Factors'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    Classifictions_id_created = db.Column(db.String(191), nullable=False)
+    Classifictions_id_created = db.Column(db.BigInteger, nullable=False)
     Classifictions_FOR_Factors_id_created = db.Column(db.BigInteger, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-class Classification(db.Model):
+class Classification(db.Model): # در این جدول دسته بندی ها با نام و ... وجود دارند
     __tablename__ = 'Classifictions'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     name = db.Column(db.String(191), nullable=False)
@@ -149,7 +149,7 @@ class Classification(db.Model):
     neighborhoods = relationship('ClassificationNeighborhood', back_populates='classification')
     user_access = relationship('UserAccess', back_populates='classification')
 
-class ClassificationNeighborhood(db.Model):
+class ClassificationNeighborhood(db.Model): # در این جدول محلات هر دسته بندی به اون الصاق شده است
     __tablename__ = 'Classifictions_Neighborhoods'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     classifiction_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
@@ -160,7 +160,7 @@ class ClassificationNeighborhood(db.Model):
     classification = relationship('Classification', back_populates='neighborhoods')
     neighborhood = relationship('Neighborhood', back_populates='classifications')
 
-class ClassificationTypes(db.Model):
+class ClassificationTypes(db.Model): # در این جدول تایپ یا انواع فایل های هر دسته بندی موجود است
     __tablename__ = 'Classifictions_Types'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     classifiction_id = db.Column(db.BigInteger, db.ForeignKey('Classifictions.id', ondelete='CASCADE'), nullable=False)
@@ -168,14 +168,14 @@ class ClassificationTypes(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-class Types_file(db.Model):
+class Types_file(db.Model): # این جدول انواع فایل رو ذکر کرده
     __tablename__ = 'Types_file'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     name = db.Column(db.String(191), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-class UserAccess(db.Model):
+class UserAccess(db.Model): # این جدول دسترسی هر یوزر رو ست کرده
     __tablename__ = 'User_Access'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
@@ -188,7 +188,7 @@ class UserAccess(db.Model):
     user = relationship('users', back_populates='user_access')  # حذف backref و استفاده از back_populates
     classification = relationship('Classification', back_populates='user_access')
 
-class Factor(db.Model):
+class Factor(db.Model): # این جدول فاکتور ها است
     __tablename__ = 'Factors'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     user_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
@@ -200,7 +200,7 @@ class Factor(db.Model):
     expired_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-class FactorAccess(db.Model):
+class FactorAccess(db.Model): # این جدول دسترسی هر فاکتور به طبقه بندی هاست
     __tablename__ = 'Factor_Access'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
@@ -210,7 +210,18 @@ class FactorAccess(db.Model):
     expired_at = db.Column(db.DateTime, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
-class Neighborhood(db.Model):
+class Users_in_Factors_Acsess(db.Model): # این جدول یوزر های دارای دسترسی به هر طبقه بندی از هر فاکتور رو نشان میدهد
+    __tablename__ = 'Users_in_Factors_Acsess'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    Classifictions_id = db.Column(db.BigInteger, nullable=False)
+    factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.BigInteger, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    expired_at = db.Column(db.DateTime, nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now())
+
+
+class Neighborhood(db.Model): # این جدول محلات رو در بر دارد
     __tablename__ = 'Neighborhoods'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     name = db.Column(db.String(191), nullable=False)

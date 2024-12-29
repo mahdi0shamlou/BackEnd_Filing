@@ -403,6 +403,23 @@ class DatabaseManager:
         self.cursor.execute(create_table_query)
         self.connection.commit()
 
+        create_table_query = """
+            CREATE TABLE IF NOT EXISTS Users_in_Factors_Acsess (
+                id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+                user_id BIGINT(20) UNSIGNED NOT NULL,
+                Classifictions_id BIGINT(20) NOT NULL,
+                factor_id BIGINT(20) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                expired_at TIMESTAMP NOT NULL,
+                updated_at TIMESTAMP NULL DEFAULT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                FOREIGN KEY (Classifictions_id) REFERENCES Classifictions_FOR_Factors(id) ON DELETE CASCADE,
+                FOREIGN KEY (factor_id) REFERENCES Factors(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+
         # ----------------------------
         # ---------- End user accses And Factors
         # ----------------------------
