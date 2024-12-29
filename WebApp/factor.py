@@ -7,6 +7,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import users as Users
 from models import db
 from models import Factor
+from models import Classifictions_FOR_Factors
+from models import FactorAccess
 # ---------------
 # def price
 # ---------------
@@ -14,7 +16,7 @@ from models import Factor
 def Get_price(data):
     factor_type = data.get('type')
     number = data.get('number', 1)
-    classifications = data.get('classifications', [])
+    classifications_for_factors = data.get('classifications_for_factors', [])
     time_delta = data.get('time_delta', 30)
 
     price = 1000
@@ -74,6 +76,7 @@ def create_factor():
         # واکشی و اعتبارسنجی اطلاعات فاکتور
         factor_type = data.get('type')
         number = data.get('number', 1)
+        classifications_for_factors = data.get('classifications_for_factors', [])
         time_delta = data.get('time_delta', 30)  # اگر داده‌ای وجود نداشته باشد، پیش‌فرض 30 خواهد بود
         if time_delta not in [30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]:
             return jsonify({"message": "خطا در ایجاد فاکتور تعداد روز ها باید به ماه باشد"}), 500
@@ -98,7 +101,15 @@ def create_factor():
 
         db.session.add(new_factor)
         db.session.commit()
-
+        for i in classifications_for_factors:
+            new_factor_accses = FactorAccess(
+                user_id=user.id,
+                factor_id=new_factor.id,
+                classifictions_for_factors_id=i,
+                expired_at=new_date
+            )
+            db.session.add(new_factor_accses)
+        db.session.commit()
         return jsonify({
             "message": "فاکتور با موفقیت ایجاد شد",
             "factor": {
@@ -114,6 +125,7 @@ def create_factor():
 
     except Exception as e:
         db.session.rollback()
+
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در ایجاد فاکتور"}), 500
 
@@ -157,12 +169,16 @@ def delete_factor(factor_id):
 @jwt_required()
 def get_factors_price():
     try:
-        data = request.get_json()
-        if not data:
-            return jsonify({"message": "داده‌ای دریافت نشد!"}), 400
+        factors = Classifictions_FOR_Factors.query.all()
+        # تبدیل فاکتورها به فرمت جیسون
+        factors_list = [{
+            "id": factor.id,
+            "price": factor.price,
+            "name": factor.name,
+            "created_at": factor.created_at.isoformat()
+        } for factor in factors]
 
-        price = Get_price(data)
-        return jsonify({"Prices": price}), 200
+        return jsonify({"factors": factors_list}), 200
 
     except Exception as e:
         print(str(e))  # برای دیباگ
