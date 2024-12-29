@@ -184,3 +184,25 @@ def get_factors_price():
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در دریافت قیمت"}), 500
 
+#--------------------------------------
+# Routes Of Pardakhat
+#--------------------------------------
+
+@factors_bp.route('/Factors/do/<int:factor_id>', methods=['GET'])
+@jwt_required()
+def do_factors(factor_id):
+    try:
+        return jsonify({"factors": "LINK"}), 200
+    except Exception as e:
+        print(str(e))  # برای دیباگ
+        return jsonify({"message": "خطا در دریافت فاکتور"}), 500
+
+@factors_bp.route('/Factors/did/<int:factor_id>', methods=['GET'])
+@jwt_required()
+def did_factors(factor_id):
+    try:
+        
+        return jsonify({"factors": "LINK"}), 200
+    except Exception as e:
+        print(str(e))  # برای دیباگ
+        return jsonify({"message": "خطا در دریافت فاکتور"}), 500
