@@ -325,9 +325,10 @@ def manage_factors_list(factor_id):
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در دریافت پول با پشتیبانی تماس بگیرید"}), 500
 
-@factors_bp.route('/Factors/Acsess/<int:user_ids>/<int:factor_id>', methods=['GET'])
+
+@factors_bp.route('/Factors/Acsess/Add/<int:user_ids>/<int:factor_id>', methods=['GET'])
 @jwt_required()
-def manage_factors_user_Acsses(factor_id, user_ids):
+def add_user_manage_factors_user_Acsses(factor_id, user_ids):
     try:
         # دریافت اطلاعات کاربر فعلی از توکن JWT
         current_user = get_jwt_identity()
@@ -339,17 +340,94 @@ def manage_factors_user_Acsses(factor_id, user_ids):
         if not factor or factor.status != 1:
             return jsonify({"message": "فاکتور مورد نظر یافت نشد"}), 404
 
-        query = Users_in_Factors_Acsess.query.filter(Users_in_Factors_Acsess.user_id==user_ids)
-        query = query.filter(Users_in_Factors_Acsess.factor_id==factor_id).all()
+        query = Users_in_Factors_Acsess.query.filter(Users_in_Factors_Acsess.factor_id == factor_id).all()
 
-        if not query:
-            return jsonify({"message": "یوزر یافت نشد !"}), 404
-        return_list = []
-        for i in query:
-            query = Classifictions_FOR_Factors.query.filter_by(id=i.Classifictions_id).first()
-            return_list.append({"name" : query.name})
-        return jsonify({"acsses": return_list}), 200
+        unique_users = []
+        for access in query:
+            # If the user_id is not in the set, add it to the dictionary
+            if access.id not in unique_users:
+                unique_users.append(access.user_id)
+        print(len(unique_users))
+        print(unique_users)
+        if user_ids in unique_users or len(unique_users)+1 > factor.number:
+            return jsonify({"message": "کاربر بیش از حد مجاز"}), 200
+
+
+        factor_acsess = FactorAccess.query.filter_by(factor_id=factor.id).all()
+        for factor_acsess_one in factor_acsess:
+            Users_in_Factors_Acsess_new = Users_in_Factors_Acsess(
+                user_id=user_ids,
+                factor_id=factor.id,
+                Classifictions_id=factor_acsess_one.classifictions_for_factors_id,
+                expired_at=factor.expired_at
+            )
+            db.session.add(Users_in_Factors_Acsess_new)
+
+            classifictions_for_factors_id = factor_acsess_one.classifictions_for_factors_id
+            classifictions_user_accsess = PER_Classifictions_FOR_Factors.query.filter_by(
+                Classifictions_FOR_Factors_id_created=classifictions_for_factors_id).all()
+            for i in classifictions_user_accsess:
+                print(i.Classifictions_id_created)
+                new_user_acsses = UserAccess(
+                    factor_id=factor.id,
+                    user_id=user_ids,
+                    classifictions_id=i.Classifictions_id_created,
+                    expired_at=factor.expired_at
+                )
+                db.session.add(new_user_acsses)
+                db.session.commit()
+
+        return jsonify({"factors": "True"}), 200
+
+
+
 
     except Exception as e:
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در دریافت پول با پشتیبانی تماس بگیرید"}), 500
+
+
+@factors_bp.route('/Factors/Acsess/Remove/<int:user_id>/<int:factor_id>', methods=['DELETE'])
+@jwt_required()
+def remove_user_manage_factors_user_access(user_id, factor_id):
+    try:
+        # دریافت اطلاعات کاربر فعلی از توکن JWT
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+
+        # پیدا کردن کاربر فعلی از دیتابیس
+        user = Users.query.filter_by(phone=user_phone).first()
+        if not user:
+            return jsonify({"message": "کاربر جاری یافت نشد"}), 404
+
+        # پیدا کردن فاکتورهای مربوط به کاربر جاری
+        factor = Factor.query.filter_by(id=factor_id, user_id=user.id).first()
+        if not factor or factor.status != 1:
+            return jsonify({"message": "فاکتور مورد نظر یافت نشد"}), 404
+
+        # حذف کاربر از جدول Users_in_Factors_Acsess
+        user_in_factor_access = Users_in_Factors_Acsess.query.filter_by(
+            factor_id=factor_id, user_id=user_id).all()
+
+        if not user_in_factor_access:
+            return jsonify({"message": "کاربر مورد نظر یافت نشد یا حذف شده است"}), 404
+
+        for user_access in user_in_factor_access:
+            db.session.delete(user_access)
+
+        # حذف دسترسی‌های کاربر از جدول UserAccess برای فاکتور مورد نظر
+        user_access_list = UserAccess.query.filter_by(
+            factor_id=factor_id, user_id=user_id).all()
+
+        for user_access in user_access_list:
+            db.session.delete(user_access)
+
+        # اعمال تغییرات در دیتابیس
+        db.session.commit()
+
+        return jsonify({"message": "کاربر و دسترسی‌های مربوط با موفقیت حذف شد"}), 200
+
+    except Exception as e:
+        db.session.rollback()  # اگر خطایی رخ داد، تغییرات را برگردان
+        print(str(e))  # برای دیباگ و شناسایی خطا
+        return jsonify({"message": "خطای سرور. با پشتیبانی تماس بگیرید"}), 500
