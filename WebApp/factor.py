@@ -319,7 +319,10 @@ def manage_factors_list(factor_id):
                     "user_phone": user_data.phone,
                     "user_name": user_data.name
                 }
-        return unique_users
+        return_list = []
+        for v in unique_users.values():
+            return_list.append(v)
+        return return_list
 
     except Exception as e:
         print(str(e))  # برای دیباگ
