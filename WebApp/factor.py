@@ -1,5 +1,3 @@
-from os import access
-
 from flask import Blueprint, jsonify, request
 from datetime import datetime, timedelta
 # -------------jwt tokens
@@ -329,15 +327,16 @@ def manage_factors_list(factor_id):
         return jsonify({"message": "خطا در دریافت پول با پشتیبانی تماس بگیرید"}), 500
 
 
-@factors_bp.route('/Factors/Acsess/Add/<int:user_ids>/<int:factor_id>', methods=['GET'])
+@factors_bp.route('/Factors/Acsess/Add/<int:user_phone_should_add>/<int:factor_id>', methods=['GET'])
 @jwt_required()
-def add_user_manage_factors_user_Acsses(factor_id, user_ids):
+def add_user_manage_factors_user_Acsses(factor_id, user_phone_should_add):
     try:
         # دریافت اطلاعات کاربر فعلی از توکن JWT
         current_user = get_jwt_identity()
         user_phone = current_user['phone']
         # پیدا کردن کاربر در دیتابیس
         user = Users.query.filter_by(phone=user_phone).first()
+        user_should_add = Users.query.filter_by(phone=user_phone_should_add).first()
         # پیدا کردن فاکتورهای مربوط به کاربر فعلی
         factor = Factor.query.filter_by(id=factor_id, user_id=user.id).first()
         if not factor or factor.status != 1:
@@ -352,14 +351,14 @@ def add_user_manage_factors_user_Acsses(factor_id, user_ids):
                 unique_users.append(access.user_id)
         print(len(unique_users))
         print(unique_users)
-        if user_ids in unique_users or len(unique_users)+1 > factor.number:
+        if user_should_add.id in unique_users or len(unique_users)+1 > factor.number:
             return jsonify({"message": "کاربر بیش از حد مجاز"}), 200
 
 
         factor_acsess = FactorAccess.query.filter_by(factor_id=factor.id).all()
         for factor_acsess_one in factor_acsess:
             Users_in_Factors_Acsess_new = Users_in_Factors_Acsess(
-                user_id=user_ids,
+                user_id=user_should_add.id,
                 factor_id=factor.id,
                 Classifictions_id=factor_acsess_one.classifictions_for_factors_id,
                 expired_at=factor.expired_at
@@ -373,7 +372,7 @@ def add_user_manage_factors_user_Acsses(factor_id, user_ids):
                 print(i.Classifictions_id_created)
                 new_user_acsses = UserAccess(
                     factor_id=factor.id,
-                    user_id=user_ids,
+                    user_id=user_should_add.id,
                     classifictions_id=i.Classifictions_id_created,
                     expired_at=factor.expired_at
                 )
