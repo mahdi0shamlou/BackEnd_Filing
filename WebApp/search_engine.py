@@ -80,6 +80,7 @@ def search_engine_less_details():
         user_phone = current_user['phone']
         user = Users.query.filter_by(phone=user_phone).first()
         auth_header = request.headers.get('Authorization', None)
+        auth_header = auth_header.split(" ")[1]
         if auth_header == user.jwt_token:
             # بررسی دسترسی کاربر و دریافت محله‌های مجاز
             has_access, allowed_mahals, allowed_type_ids = check_user_has_accses(user, request)
@@ -210,6 +211,7 @@ def search_engine_full_details():
         user_phone = current_user['phone']
         user = Users.query.filter_by(phone=user_phone).first()
         auth_header = request.headers.get('Authorization', None)
+        auth_header = auth_header.split(" ")[1]
         if auth_header == user.jwt_token:
             # بررسی دسترسی کاربر و دریافت محله‌های مجاز
             has_access, allowed_mahals, allowed_type_ids = check_user_has_accses(user, request)
