@@ -27,48 +27,52 @@ def details_file():
         id_file = request_data.get('id', 1)
 
         user = Users.query.filter_by(phone=user_phone).first()
-        check_accses = check_user_has_accses(user, id_file)
-        if check_accses:
-            try:
-                query = Posts.query.filter_by(id=id_file).first()
+        auth_header = request.headers.get('Authorization', None)
+        auth_header = auth_header.split(" ")[1]
+        if auth_header == user.jwt_token:
+            check_accses = check_user_has_accses(user, id_file)
+            if check_accses:
+                try:
+                    query = Posts.query.filter_by(id=id_file).first()
 
-                posts_list = [{
-                    'id': query.id,
-                    'title': query.title,
-                    'Images': query.Images,
-                    'city': query.city_text,
-                    'type': query.type_text,
-                    '_type': str(query.type)[0],
-                    'price': query.price,
-                    'price_two': query.price_two,
-                    'PARKING': query.PARKING,
-                    'CABINET': query.CABINET,
-                    'ELEVATOR': query.ELEVATOR,
-                    'BALCONY': query.BALCONY,
-                    'Otagh': query.Otagh,
-                    'Make_years': query.Make_years,
-                    'phone': query.number,
-                    'mahal': query.mahal_text,
-                    'meter': query.meter,
-                    'token': query.token,
-                    'desck': query.desck,
-                    'details': query.details,
-                    'date_created_persian':query.date_created_persian,
-                    'date_created': query.date_created
-                }]
+                    posts_list = [{
+                        'id': query.id,
+                        'title': query.title,
+                        'Images': query.Images,
+                        'city': query.city_text,
+                        'type': query.type_text,
+                        '_type': str(query.type)[0],
+                        'price': query.price,
+                        'price_two': query.price_two,
+                        'PARKING': query.PARKING,
+                        'CABINET': query.CABINET,
+                        'ELEVATOR': query.ELEVATOR,
+                        'BALCONY': query.BALCONY,
+                        'Otagh': query.Otagh,
+                        'Make_years': query.Make_years,
+                        'phone': query.number,
+                        'mahal': query.mahal_text,
+                        'meter': query.meter,
+                        'token': query.token,
+                        'desck': query.desck,
+                        'details': query.details,
+                        'date_created_persian':query.date_created_persian,
+                        'date_created': query.date_created
+                    }]
 
-                response_data = {
-                    'posts': posts_list,
-                }
+                    response_data = {
+                        'posts': posts_list,
+                    }
 
 
-                return jsonify(response_data)
-            except Exception as e:
-                print(e)  # Log the error
-                return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره تلاش کنید !', 'message': str(e)}), 500
+                    return jsonify(response_data)
+                except Exception as e:
+                    print(e)  # Log the error
+                    return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره تلاش کنید !', 'message': str(e)}), 500
+            else:
+                return jsonify({"message": "شما به این فایل دسترسی ندارید ."}), 403
         else:
-            return jsonify({"message": "شما به این فایل دسترسی ندارید ."}), 403
-
+            return jsonify({'error': 'An error occurred', 'message': "شما احتمالا با چند دیوایس مختلف وارد شده اید !"}), 500
     except Exception as e:
         print(e)
         return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
