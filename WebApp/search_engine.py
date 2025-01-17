@@ -16,55 +16,57 @@ searchenign_bp = Blueprint('searchenign', __name__)
 
 def check_user_has_accses(user, request):
     try:
-        request_data = request.get_json()
-        class_id = request_data.get('class', 1)
-        requested_types = request_data.get('type', [])  # دریافت به صورت لیست
+        #---------------------
+        # get user Access
+        # ---------------------
+        user_access_ids = UserAccess.query.filter_by(user_id=user.id).with_entities(
+            UserAccess.classifictions_id).distinct().all()
 
-        # چک کردن دسترسی کاربر به classification
-        access = UserAccess.query.filter_by(
-            user_id=user.id,
-            classifictions_id=class_id
-        ).first()
-
-        if not access:
+        if not user_access_ids:
             return False, [], []
-
-        # دریافت تمام type های مجاز برای این classification
-        allowed_types = (db.session.query(ClassificationTypes.type)
-                         .filter(ClassificationTypes.classifiction_id == class_id)
-                         .all())
-
-        allowed_type_ids = [t[0] for t in allowed_types]
-
+        list_search = [classification[0] for classification in user_access_ids]
+        #---------------------
+        # pars request data
+        # ---------------------
+        request_data = request.get_json()
+        #---------------------
+        # check user type and mahal Access
+        # ---------------------
+        requested_types = request_data.get('type', [])  # دریافت به صورت لیست
+        requested_mahal = request_data.get('mahal', [])  # دریافت به صورت لیست
         # اگر types درخواستی خالی باشد، تمام types مجاز را برمی‌گردانیم
         if not requested_types:
-            requested_types = allowed_type_ids
-        # اگر types درخواستی آرایه نیست، تبدیل به آرایه می‌کنیم
-        elif not isinstance(requested_types, list):
-            requested_types = [requested_types]
+            return False, [], []
+        if not requested_mahal:
+            return False, [], []
+        # دریافت تمام type های مجاز برای این classification
+        allowed_types = (db.session.query(ClassificationTypes.type)
+                         .filter(ClassificationTypes.classifiction_id.in_(list_search))
+                         .distinct()
+                         .all())
+        # Retrieve unique allowed neighborhood IDs directly
+        allowed_mahal = (db.session.query(ClassificationNeighborhood.neighborhood_id)
+                         .filter(ClassificationNeighborhood.classifiction_id.in_(list_search))
+                         .distinct()
+                         .all())
+
+        allowed_types_flat = [classification[0] for classification in allowed_types]
+        allowed_mahal_flat = [classification[0] for classification in allowed_mahal]
 
         # چک می‌کنیم آیا تمام types درخواستی در لیست مجاز هستند
         for type_id in requested_types:
-            if type_id not in allowed_type_ids:
+            if type_id not in allowed_types_flat:
                 return False, [], []
 
-        # دریافت محله‌های مجاز
-        allowed_neighborhoods = (db.session.query(Neighborhood.id)
-                                 .join(ClassificationNeighborhood)
-                                 .filter(ClassificationNeighborhood.classifiction_id == class_id)
-                                 .all())
+        for mahal_id in requested_mahal:
+            if mahal_id not in allowed_mahal_flat:
+                return False, [], []
 
-        allowed_neighborhood_ids = [n[0] for n in allowed_neighborhoods]
+        print(f"this is lis of user_access {list_search}")
+        print(f"mahal_id should search {requested_mahal} search in {allowed_mahal_flat}")
+        print(f"type_id should search {requested_types} search in {allowed_types_flat}")
 
-        # چک کردن محله‌های درخواستی
-        requested_mahals = request_data.get('mahal', [])
-        if requested_mahals:
-            for mahal in requested_mahals:
-                if mahal not in allowed_neighborhood_ids:
-                    return False, [], []
-            return True, requested_mahals, requested_types
-        else:
-            return True, allowed_neighborhood_ids, requested_types
+        return True, requested_mahal, requested_types
 
     except Exception as e:
         print(f"Error in check_user_has_accses: {str(e)}")
