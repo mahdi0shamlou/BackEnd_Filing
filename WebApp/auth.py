@@ -83,8 +83,11 @@ def code_checker_login():
         if user:
             response_checker = code_cheker(phone, code)
             if response_checker:
+
                 expires = datetime.timedelta(days=2)
                 access_token = create_access_token(identity={"phone": user.phone}, expires_delta=expires)
+                user.jwt_token = access_token
+                db.session.commit()
                 return jsonify({"Text": "ورود شما موفقیت آمیز بود !", "access_token": access_token}), 200
             else:
                 return jsonify({"Text": "کد وارد شده درست نبود !"}), 400
