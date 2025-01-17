@@ -273,10 +273,12 @@ class DatabaseManager:
         #----------------------------
         #---------- Start Classifictions
         # ----------------------------
+        # ALTER TABLE Classifictions ADD types INT;
         create_table_query = """
             CREATE TABLE IF NOT EXISTS Classifictions (
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(191) NOT NULL,
+                types INT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP NULL DEFAULT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

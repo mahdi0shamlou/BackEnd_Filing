@@ -350,7 +350,7 @@ def search_engine_full_details():
 #-------------------------------------
 # mahal requests
 #-------------------------------------
-
+"""
 @searchenign_bp.route('/Search/User/Access', methods=['GET'])
 @jwt_required()
 def users_access():
@@ -394,14 +394,14 @@ def users_access():
             'status': 'error',
             'message': str(e)
         }), 500)
-
+"""
 
 @searchenign_bp.route('/Search/User/Class', methods=['POST'])
 @jwt_required()
 def users_access_class_new():
     try:
         request_data = request.get_json()
-        classification_id = request_data.get('class', 1)
+        type_search = request_data.get('type_search', 1) # sell => 1 , rent => 2
 
         # دریافت اطلاعات کاربر از توکن
         current_user = get_jwt_identity()
@@ -414,37 +414,45 @@ def users_access_class_new():
                 'message': 'کاربر یافت نشد'
             }), 404
 
-        # چک کردن دسترسی کاربر
-        access = UserAccess.query.filter_by(
-            user_id=user.id,
-            classifictions_id=classification_id
-        ).first()
+        user_access_ids = UserAccess.query.filter_by(user_id=user.id).with_entities(
+            UserAccess.classifictions_id).distinct().all()
 
-        if not access:
+        if not user_access_ids:
             return jsonify({
                 'status': 'error',
                 'message': 'شما دسترسی به این دسته‌بندی ندارید'
             }), 403
+        list_search = [classification[0] for classification in user_access_ids]
+        list_search_res = (db.session.query(Classification.id).filter(Classification.types==type_search)
+                         .filter(Classification.id.in_(list_search))
+                         .distinct()
+                         .all())
+        list_should_search = [classification[0] for classification in list_search_res]
 
-        # Get classification types with their names
-        types = (db.session.query(
-            ClassificationTypes.type,
-            Types_file.name.label('type_name')
-        )
-                 .join(Types_file, ClassificationTypes.type == Types_file.id)
-                 .filter(ClassificationTypes.classifiction_id == classification_id)
-                 .all())
+        # دریافت تمام type های مجاز برای این classification
+        allowed_types = (db.session.query(ClassificationTypes.type)
+                         .filter(ClassificationTypes.classifiction_id.in_(list_should_search))
+                         .distinct()
+                         .all())
+        # Retrieve unique allowed neighborhood IDs directly
+        allowed_mahal = (db.session.query(ClassificationNeighborhood.neighborhood_id)
+                         .filter(ClassificationNeighborhood.classifiction_id.in_(list_should_search))
+                         .distinct()
+                         .all())
+        print(allowed_mahal)
+        print(allowed_types)
+        allowed_types_flat = [classification[0] for classification in allowed_types]
+        allowed_mahal_flat = [classification[0] for classification in allowed_mahal]
+
+
+        types = Types_file.query.filter(Types_file.id.in_(allowed_types_flat)).all()
 
         types_list = [{
-            'id': type.type,
-            'name': type.type_name
+            'id': type.id,
+            'name': type.name
         } for type in types]
 
-        # Get neighborhoods through ClassificationNeighborhood
-        neighborhoods = (db.session.query(Neighborhood)
-                         .join(ClassificationNeighborhood)
-                         .filter(ClassificationNeighborhood.classifiction_id == classification_id)
-                         .all())
+        neighborhoods = Neighborhood.query.filter(Neighborhood.id.in_(allowed_mahal_flat)).all()
 
         neighborhoods_list = [{
             'id': neighborhood.id,

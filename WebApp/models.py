@@ -144,6 +144,7 @@ class Classification(db.Model): # در این جدول دسته بندی ها ب
     __tablename__ = 'Classifictions'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     name = db.Column(db.String(191), nullable=False)
+    types = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, onupdate=datetime.now())
 
