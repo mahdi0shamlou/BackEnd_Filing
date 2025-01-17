@@ -4,15 +4,40 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 #-------------
 #------------- models
 from models import users as Users
-from models import Posts
+from models import Posts, UserAccess, db, ClassificationTypes, ClassificationNeighborhood
 #---------------
 
 details_bp = Blueprint('details', __name__)
 
-def check_user_has_accses(user, mahal):
-    print(user)
-    print(mahal)
-    return True
+def check_user_has_accses(user, mahal_id, type_id):
+    user_access_ids = UserAccess.query.filter_by(user_id=user.id).with_entities(UserAccess.classifictions_id).distinct().all()
+
+    if not user_access_ids:
+        return False, [], []
+
+    list_search = [classification[0] for classification in user_access_ids]
+    # دریافت تمام type های مجاز برای این classification
+    allowed_types = (db.session.query(ClassificationTypes.type)
+                     .filter(ClassificationTypes.classifiction_id.in_(list_search))
+                     .distinct()
+                     .all())
+    # Retrieve unique allowed neighborhood IDs directly
+    allowed_mahal = (db.session.query(ClassificationNeighborhood.neighborhood_id)
+                     .filter(ClassificationNeighborhood.classifiction_id.in_(list_search))
+                     .distinct()
+                     .all())
+
+    allowed_types_flat = [classification[0] for classification in allowed_types]
+    allowed_mahal_flat = [classification[0] for classification in allowed_mahal]
+    print(f"this is lis of user_access {list_search}")
+    print(f"mahal_id should search {mahal_id} search in {allowed_mahal_flat}")
+    print(f"type_id should search {type_id} search in {allowed_types_flat}")
+
+    # Check if mahal_id and type_id exist in the allowed lists
+    if mahal_id in allowed_mahal_flat and type_id in allowed_types_flat:
+        return True
+    else:
+        return False
 
 
 @details_bp.route('/Details', methods=['POST'])
@@ -30,11 +55,10 @@ def details_file():
         auth_header = request.headers.get('Authorization', None)
         auth_header = auth_header.split(" ")[1]
         if auth_header == user.jwt_token:
-            check_accses = check_user_has_accses(user, id_file)
+            query = Posts.query.filter_by(id=id_file).first()
+            check_accses = check_user_has_accses(user, query.mahal, query.type)
             if check_accses:
                 try:
-                    query = Posts.query.filter_by(id=id_file).first()
-
                     posts_list = [{
                         'id': query.id,
                         'title': query.title,
