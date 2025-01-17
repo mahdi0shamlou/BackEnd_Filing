@@ -30,8 +30,6 @@ def details_file():
         check_accses = check_user_has_accses(user, id_file)
         if check_accses:
             try:
-
-
                 query = Posts.query.filter_by(id=id_file).first()
 
                 posts_list = [{
