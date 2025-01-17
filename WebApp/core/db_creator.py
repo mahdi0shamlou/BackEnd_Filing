@@ -44,6 +44,7 @@ class DatabaseManager:
         #----------------------------
         #---------- create Users table
         # ----------------------------
+        #ALTER TABLE users ADD jwt_token TEXT;
         create_table_query = """
         CREATE TABLE IF NOT EXISTS users (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -52,6 +53,7 @@ class DatabaseManager:
             name VARCHAR(191),
             phone VARCHAR(191) NOT NULL UNIQUE,
             address TEXT,
+            jwt_token TEXT,
             email VARCHAR(191),
             created_at TIMESTAMP NULL DEFAULT NULL,
             updated_at TIMESTAMP NULL DEFAULT NULL,
