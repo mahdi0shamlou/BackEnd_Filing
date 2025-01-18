@@ -14,7 +14,7 @@ from models import Classification, ClassificationNeighborhood, Neighborhood, Use
 searchenign_bp = Blueprint('searchenign', __name__)
 
 
-def check_user_has_accses(user, request):
+def check_user_has_accses_new_version(user, request):
     try:
         #---------------------
         # get user Access
@@ -72,6 +72,61 @@ def check_user_has_accses(user, request):
         print(f"Error in check_user_has_accses: {str(e)}")
         return False, [], []
 
+def check_user_has_accses(user, request):
+    try:
+        request_data = request.get_json()
+        class_id = request_data.get('class', 1)
+        requested_types = request_data.get('type', [])  # دریافت به صورت لیست
+
+        # چک کردن دسترسی کاربر به classification
+        access = UserAccess.query.filter_by(
+            user_id=user.id,
+            classifictions_id=class_id
+        ).first()
+
+        if not access:
+            return False, [], []
+
+        # دریافت تمام type های مجاز برای این classification
+        allowed_types = (db.session.query(ClassificationTypes.type)
+                         .filter(ClassificationTypes.classifiction_id == class_id)
+                         .all())
+
+        allowed_type_ids = [t[0] for t in allowed_types]
+
+        # اگر types درخواستی خالی باشد، تمام types مجاز را برمی‌گردانیم
+        if not requested_types:
+            requested_types = allowed_type_ids
+        # اگر types درخواستی آرایه نیست، تبدیل به آرایه می‌کنیم
+        elif not isinstance(requested_types, list):
+            requested_types = [requested_types]
+
+        # چک می‌کنیم آیا تمام types درخواستی در لیست مجاز هستند
+        for type_id in requested_types:
+            if type_id not in allowed_type_ids:
+                return False, [], []
+
+        # دریافت محله‌های مجاز
+        allowed_neighborhoods = (db.session.query(Neighborhood.id)
+                                 .join(ClassificationNeighborhood)
+                                 .filter(ClassificationNeighborhood.classifiction_id == class_id)
+                                 .all())
+
+        allowed_neighborhood_ids = [n[0] for n in allowed_neighborhoods]
+
+        # چک کردن محله‌های درخواستی
+        requested_mahals = request_data.get('mahal', [])
+        if requested_mahals:
+            for mahal in requested_mahals:
+                if mahal not in allowed_neighborhood_ids:
+                    return False, [], []
+            return True, requested_mahals, requested_types
+        else:
+            return True, allowed_neighborhood_ids, requested_types
+
+    except Exception as e:
+        print(f"Error in check_user_has_accses: {str(e)}")
+        return False, [], []
 
 @searchenign_bp.route('/Search/LessDetails', methods=['POST'])
 @jwt_required()
@@ -346,11 +401,10 @@ def search_engine_full_details():
         print(e)
         return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
 
-
 #-------------------------------------
 # mahal requests
 #-------------------------------------
-"""
+
 @searchenign_bp.route('/Search/User/Access', methods=['GET'])
 @jwt_required()
 def users_access():
@@ -394,8 +448,9 @@ def users_access():
             'status': 'error',
             'message': str(e)
         }), 500)
-"""
 
+
+"""
 @searchenign_bp.route('/Search/User/Class', methods=['POST'])
 @jwt_required()
 def users_access_class_new():
@@ -453,6 +508,76 @@ def users_access_class_new():
         } for type in types]
 
         neighborhoods = Neighborhood.query.filter(Neighborhood.id.in_(allowed_mahal_flat)).all()
+
+        neighborhoods_list = [{
+            'id': neighborhood.id,
+            'name': neighborhood.name
+        } for neighborhood in neighborhoods]
+
+        response = {
+            'status': 'success',
+            'data': {
+                'types': types_list,
+                'neighborhoods': neighborhoods_list
+            }
+        }
+
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+"""
+@searchenign_bp.route('/Search/User/Class', methods=['POST'])
+@jwt_required()
+def users_access_class_new():
+    try:
+        request_data = request.get_json()
+        classification_id = request_data.get('class', 1)
+
+        # دریافت اطلاعات کاربر از توکن
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+        user = Users.query.filter_by(phone=user_phone).first()
+
+        if not user:
+            return jsonify({
+                'status': 'error',
+                'message': 'کاربر یافت نشد'
+            }), 404
+
+        # چک کردن دسترسی کاربر
+        access = UserAccess.query.filter_by(
+            user_id=user.id,
+            classifictions_id=classification_id
+        ).first()
+
+        if not access:
+            return jsonify({
+                'status': 'error',
+                'message': 'شما دسترسی به این دسته‌بندی ندارید'
+            }), 403
+
+        # Get classification types with their names
+        types = (db.session.query(
+            ClassificationTypes.type,
+            Types_file.name.label('type_name')
+        )
+                 .join(Types_file, ClassificationTypes.type == Types_file.id)
+                 .filter(ClassificationTypes.classifiction_id == classification_id)
+                 .all())
+
+        types_list = [{
+            'id': type.type,
+            'name': type.type_name
+        } for type in types]
+
+        # Get neighborhoods through ClassificationNeighborhood
+        neighborhoods = (db.session.query(Neighborhood)
+                         .join(ClassificationNeighborhood)
+                         .filter(ClassificationNeighborhood.classifiction_id == classification_id)
+                         .all())
 
         neighborhoods_list = [{
             'id': neighborhood.id,
