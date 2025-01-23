@@ -231,3 +231,15 @@ class Neighborhood(db.Model): # این جدول محلات رو در بر دار
     date_created = db.Column(db.DateTime, default=datetime.now())
 
     classifications = relationship('ClassificationNeighborhood', back_populates='neighborhood')
+
+#-------------------------------
+#-------Pardakht
+#-------------------------------
+
+class Pardakht(db.Model): # این جدول محلات رو در بر دارد
+    __tablename__ = 'Pardakht'
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
+    authority = db.Column(db.String(191), nullable=False)
+    status = db.Column(db.Integer, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.now())

@@ -464,6 +464,19 @@ class DatabaseManager:
         self.cursor.execute(create_table_query)
         self.connection.commit()
 
+        create_table_query = """
+                CREATE TABLE Pardakht (
+                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                        factor_id BIGINT(20) NOT NULL,
+                        authority VARCHAR(191) NOT NULL,
+                        status INT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (factor_id) REFERENCES Factors(id) ON DELETE CASCADE
+                )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+
     def close(self):
         self.cursor.close()
         self.connection.close()
