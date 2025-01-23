@@ -229,13 +229,11 @@ def do_factors(factor_id):
             return {"status" : "okay", "Link_Pardakht" : 'https://www.zarinpal.com/pg/StartPay/' + result.Authority}, 200
         else:
             return {"status" : "error", "Link_Pardakht" : ''}, 500
-
-
     except Exception as e:
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در دریافت فاکتور"}), 500
 
-@factors_bp.route('/Factors/did/<int:factor_id>', methods=['GET'])
+@factors_bp.route('/Factors/did/<int:factor_id>', methods=['GET', 'POST'])
 @jwt_required()
 def did_factors(factor_id):
     try:
