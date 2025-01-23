@@ -218,12 +218,13 @@ def do_factors(factor_id):
         email = user.email  # Optional
         mobile = user.phone # Optional
         client = Client(ZARINPAL_WEBSERVICE)
+        print(f'5.34.195.27/Factors/did/{factor.id}')
         result = client.service.PaymentRequest(MMERCHANT_ID,
                                                amount,
                                                description,
                                                email,
                                                mobile,
-                                               str(url_for('did_factors', _external=True)))
+                                               f'5.34.195.27/Factors/did/{factor.id}')
         if result.Status == 100:
             print(result)
             return {"status" : "okay", "Link_Pardakht" : 'https://www.zarinpal.com/pg/StartPay/' + result.Authority}, 200
