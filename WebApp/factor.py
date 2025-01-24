@@ -6,7 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 # ------------- models
 from models import users as Users
 from models import UserAccess
-from models import db
+from models import db, Pardakht
 from models import Factor
 from models import Classifictions_FOR_Factors
 from models import FactorAccess
@@ -228,6 +228,14 @@ def do_factors(factor_id):
                                                mobile,
                                                callback_url)  # Use the
         if result.Status == 100:
+            new_Pardakht = Pardakht(
+                status=0,
+                factor_id=factor.id,
+                authority=result.Authority
+            )
+
+            db.session.add(new_Pardakht)
+            db.session.commit()
             print(result)
             return {"status" : "okay", "Link_Pardakht" : 'https://www.zarinpal.com/pg/StartPay/' + result.Authority}, 200
         else:
@@ -236,13 +244,10 @@ def do_factors(factor_id):
         print(str(e))  # برای دیباگ
         return jsonify({"message": "خطا در دریافت فاکتور"}), 500
 
+
 @factors_bp.route('/Factors/Pardakht/<int:factor_id>', methods=['GET', 'POST'])
 def pardakht_factors(factor_id):
     try:
-
-
-
-
         # پیدا کردن فاکتورهای مربوط به کاربر فعلی
         factor = Factor.query.filter_by(id=factor_id).first()
         if not factor or factor.status == 1:
@@ -310,6 +315,7 @@ def pardakht_factors(factor_id):
         return redirect("https://arkafile.org")
 
 
+"""
 @factors_bp.route('/Factors/did/<int:factor_id>', methods=['GET', 'POST'])
 @jwt_required()
 def did_factors(factor_id):
@@ -382,7 +388,7 @@ def did_factors(factor_id):
         print(str(e))  # برای دیباگ
         flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
         return redirect("https://arkafile.org")
-
+"""
 #--------------------------------------
 # Routes Of manage factors
 #--------------------------------------
