@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 MMERCHANT_ID = 'e359aef3-88b3-409b-b554-57fc5052705e'  # Required
 ZARINPAL_WEBSERVICE = 'https://www.zarinpal.com/pg/services/WebGate/wsdl'  # Required
-amount = 100  # Amount will be based on Toman  Required
+amount = 1000  # Amount will be based on Toman  Required
 description = u'توضیحات تراکنش تستی'  # Required
 email = 'user@userurl.ir'  # Optional
 mobile = '09123456789'  # Optional

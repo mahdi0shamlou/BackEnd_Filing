@@ -219,12 +219,14 @@ def do_factors(factor_id):
         mobile = user.phone # Optional
         client = Client(ZARINPAL_WEBSERVICE)
         print(f'5.34.195.27/Factors/did/{factor.id}')
+        callback_url = url_for('factors_bp.did_factors', factor_id=factor.id, _external=True)
+
         result = client.service.PaymentRequest(MMERCHANT_ID,
                                                amount,
                                                description,
                                                email,
                                                mobile,
-                                               f'5.34.195.27/Factors/did/{factor.id}')
+                                               callback_url)  # Use the
         if result.Status == 100:
             print(result)
             return {"status" : "okay", "Link_Pardakht" : 'https://www.zarinpal.com/pg/StartPay/' + result.Authority}, 200
