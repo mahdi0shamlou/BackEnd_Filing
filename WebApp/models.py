@@ -242,4 +242,4 @@ class Pardakht(db.Model): # این جدول محلات رو در بر دارد
     factor_id = db.Column(db.BigInteger, db.ForeignKey('Factors.id', ondelete='CASCADE'), nullable=False)
     authority = db.Column(db.String(191), nullable=False)
     status = db.Column(db.Integer, nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.now())
+    created_at = db.Column(db.DateTime, default=datetime.now())
