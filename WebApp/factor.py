@@ -219,7 +219,7 @@ def do_factors(factor_id):
         mobile = user.phone # Optional
         client = Client(ZARINPAL_WEBSERVICE)
         print(f'5.34.195.27/Factors/did/{factor.id}')
-        callback_url = url_for('factors_bp.pardakht_factors', factor_id=factor.id, _external=True)
+        callback_url = url_for('factor.pardakht_factors', factor_id=factor.id, _external=True)
 
         result = client.service.PaymentRequest(MMERCHANT_ID,
                                                amount,
