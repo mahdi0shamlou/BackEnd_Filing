@@ -248,8 +248,14 @@ def do_factors(factor_id):
 @factors_bp.route('/Factors/Pardakht/<int:factor_id>', methods=['GET', 'POST'])
 def pardakht_factors(factor_id):
     try:
+
+        pardakht_data = Pardakht.query.filter_by(authority=request.args['Authority']).first()
+        if not pardakht_data:
+            return jsonify({"message": "مشکلی به وجود آمده است"}), 500
+
+
         # پیدا کردن فاکتورهای مربوط به کاربر فعلی
-        factor = Factor.query.filter_by(id=factor_id).first()
+        factor = Factor.query.filter_by(id=pardakht_data.factor_id).first()
         if not factor or factor.status == 1:
             return jsonify({"message": "فاکتور مورد نظر یافت نشد و یا قبلا پرداخت شده"}), 404
 
@@ -266,6 +272,7 @@ def pardakht_factors(factor_id):
                                                         amount)
             if result.Status == 100 or result.Status == 101:
                 print(factor.status)
+                pardakht_data.status = 1
                 factor.status = 1
                 db.session.commit()
 
