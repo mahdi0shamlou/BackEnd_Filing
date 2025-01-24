@@ -239,22 +239,20 @@ def do_factors(factor_id):
 @factors_bp.route('/Factors/Pardakht/<int:factor_id>', methods=['GET', 'POST'])
 def pardakht_factors(factor_id):
     try:
-        # دریافت اطلاعات کاربر فعلی از توکن JWT
-        current_user = get_jwt_identity()
-        user_phone = current_user['phone']
 
-        # پیدا کردن کاربر در دیتابیس
-        user = Users.query.filter_by(phone=user_phone).first()
+
 
 
         # پیدا کردن فاکتورهای مربوط به کاربر فعلی
-        factor = Factor.query.filter_by(id=factor_id, user_id=user.id).first()
+        factor = Factor.query.filter_by(id=factor_id).first()
         if not factor or factor.status == 1:
             return jsonify({"message": "فاکتور مورد نظر یافت نشد و یا قبلا پرداخت شده"}), 404
 
         MMERCHANT_ID = 'e359aef3-88b3-409b-b554-57fc5052705e'  # Required
         ZARINPAL_WEBSERVICE = 'https://www.zarinpal.com/pg/services/WebGate/wsdl'  # Required
         amount = factor.price  # Amount will be based on Toman  Required
+
+        user = Users.query.filter_by(id=factor.user_id).first()
 
         client = Client(ZARINPAL_WEBSERVICE)
         if request.args.get('Status') == 'OK':
@@ -291,14 +289,17 @@ def pardakht_factors(factor_id):
                         db.session.commit()
 
                 flash('پرداخت شما با موفقیت انجام شد !')  # Flash a message
+                return "پرداخت شد درست"
                 return redirect("https://arkafile.org")
 
             else:
                 flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
+                return "ارور"
                 return redirect("https://arkafile.org")
         else:
 
             flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
+            return "ارور"
             return redirect("https://arkafile.org")
 
 
