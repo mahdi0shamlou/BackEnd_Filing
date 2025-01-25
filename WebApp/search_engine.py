@@ -146,6 +146,7 @@ def search_engine_less_details():
 
 
             try:
+                is_active = request_data.get('is_active', True)
                 price_from = request_data.get('price_from', None)
                 price_to = request_data.get('price_to', None)
                 price_from_two = request_data.get('price_from_2', None)
@@ -160,6 +161,7 @@ def search_engine_less_details():
 
 
                 query = Posts.query.filter(Posts.status == 1)
+                query = query.filter(Posts.is_active == is_active)
                 query = query.filter(Posts.mahal.in_(allowed_mahals))
                 print(allowed_type_ids)
 
@@ -277,6 +279,7 @@ def search_engine_full_details():
 
 
             try:
+                is_active = request_data.get('is_active', True)
                 price_from = request_data.get('price_from', None)
                 price_to = request_data.get('price_to', None)
                 price_from_two = request_data.get('price_from_2', None)
@@ -291,6 +294,7 @@ def search_engine_full_details():
 
 
                 query = Posts.query.filter(Posts.status == 1)
+                query = query.filter(Posts.is_active == is_active)
                 query = query.filter(Posts.mahal.in_(allowed_mahals))
                 print(allowed_type_ids)
 
