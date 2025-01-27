@@ -19,9 +19,11 @@ from suds.client import Client
 # ---------------
 
 def Get_price(data):
+
+
+    classifications_for_factors = data.get('classifications_for_factors', [])
     factor_type = data.get('type')
     number = data.get('number', 1)
-    classifications_for_factors = data.get('classifications_for_factors', [])
     time_delta = data.get('time_delta', 30)
 
     price = 1000
