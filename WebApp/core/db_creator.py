@@ -479,6 +479,27 @@ class DatabaseManager:
         self.cursor.execute(create_table_query)
         self.connection.commit()
 
+        create_table_query = """
+                CREATE TABLE Number_Profit_For_Factor (
+                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                        number_person INT NOT NULL,
+                        profit INT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+        create_table_query = """
+                CREATE TABLE Days_Profit_For_Factor (
+                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                        days INT NOT NULL,
+                        profit INT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+
     def close(self):
         self.cursor.close()
         self.connection.close()

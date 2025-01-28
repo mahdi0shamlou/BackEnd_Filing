@@ -19,15 +19,23 @@ from suds.client import Client
 # ---------------
 
 def Get_price(data):
-
-
+    # Retrieve the list of classification IDs from the input data
     classifications_for_factors = data.get('classifications_for_factors', [])
-    factor_type = data.get('type')
     number = data.get('number', 1)
-    time_delta = data.get('time_delta', 30)
+    time_delta = data.get('timetime_deltatime_deltatime_deltatime_delta_delta', 30)
 
-    price = 1000
-    return price
+
+    # Query to get the distinct classifications for factors based on provided IDs
+    classifications = (db.session.query(Classifictions_FOR_Factors)
+                       .filter(Classifictions_FOR_Factors.id.in_(classifications_for_factors))
+                       .distinct()
+                       .all())
+
+    # Calculate the total price by summing up the prices of the retrieved classifications
+    total_price = sum(classification.price for classification in classifications)
+
+
+    return total_price
 
 factors_bp = Blueprint('factor', __name__)
 
