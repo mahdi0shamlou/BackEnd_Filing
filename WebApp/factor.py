@@ -34,10 +34,13 @@ def Get_price(data):
     # Calculate the total price by summing up the prices of the retrieved classifications
     total_price = sum(classification.price for classification in classifications)
 
-    days_profit = DaysProfitForFactor.query.filter_by(DaysProfitForFactor.days == time_delta).first().profit
-    number_profit = NumberProfitForFactor.query.filter_by(NumberProfitForFactor.number_person == number).first().profit
-    total_price = total_price * (number_profit*days_profit)
+    days_profit = DaysProfitForFactor.query.filter_by(days = time_delta).first().profit
+    number_profit = NumberProfitForFactor.query.filter_by(number_person = number).first().profit
+    days_profit = (days_profit + 100)/100
+    number_profit = (number_profit + 100) / 100
 
+    total_price = total_price * (number_profit*days_profit)
+    print(total_price)
     return total_price
 
 factors_bp = Blueprint('factor', __name__)
