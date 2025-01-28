@@ -8,7 +8,7 @@ from models import users as Users
 from models import UserAccess
 from models import db, Pardakht
 from models import Factor
-from models import Classifictions_FOR_Factors
+from models import Classifictions_FOR_Factors, NumberProfitForFactor, DaysProfitForFactor
 from models import FactorAccess
 from models import PER_Classifictions_FOR_Factors, Users_in_Factors_Acsess
 #------------------
@@ -34,6 +34,9 @@ def Get_price(data):
     # Calculate the total price by summing up the prices of the retrieved classifications
     total_price = sum(classification.price for classification in classifications)
 
+    days_profit = DaysProfitForFactor.query.filter_by(DaysProfitForFactor.days == time_delta).first().profit
+    number_profit = NumberProfitForFactor.query.filter_by(NumberProfitForFactor.number_person == number).first().profit
+    total_price = total_price * (number_profit*days_profit)
 
     return total_price
 
