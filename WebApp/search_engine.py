@@ -155,8 +155,8 @@ def search_engine_less_details():
                 meter_to = request_data.get('meter_to', None)
                 page = request_data.get('page', 1)
                 otagh = request_data.get('otagh', None)
-                make_from = request_data.get('make_from')
-                make_to = request_data.get('make_two')
+                make_from = request_data.get('make_from', None)
+                make_to = request_data.get('make_two', None)
                 desck = request_data.get('desck', None)
 
 
@@ -288,8 +288,8 @@ def search_engine_full_details():
                 meter_to = request_data.get('meter_to', None)
                 page = request_data.get('page', 1)
                 otagh = request_data.get('otagh', None)
-                make_from = request_data.get('make_from')
-                make_to = request_data.get('make_two')
+                make_from = request_data.get('make_from', None)
+                make_to = request_data.get('make_two', None)
                 desck = request_data.get('desck', None)
 
 
