@@ -147,6 +147,8 @@ def search_engine_less_details():
 
             try:
                 is_active = request_data.get('is_active', True)
+                phone_number = request_data.get('phone_number', None)
+                post_id = request_data.get('post_id', None)
                 price_from = request_data.get('price_from', None)
                 price_to = request_data.get('price_to', None)
                 price_from_two = request_data.get('price_from_2', None)
@@ -164,6 +166,11 @@ def search_engine_less_details():
                 query = query.filter(Posts.is_active == is_active)
                 query = query.filter(Posts.mahal.in_(allowed_mahals))
                 print(allowed_type_ids)
+
+                if post_id is not None:
+                    query = query.filter(Posts.id == post_id)
+                if phone_number is not None:
+                    query = query.filter(Posts.number == phone_number)
 
                 if allowed_type_ids:
                     query = query.filter(Posts.type.in_(allowed_type_ids))
@@ -280,6 +287,8 @@ def search_engine_full_details():
 
             try:
                 is_active = request_data.get('is_active', True)
+                phone_number = request_data.get('phone_number', None)
+                post_id = request_data.get('post_id', None)
                 price_from = request_data.get('price_from', None)
                 price_to = request_data.get('price_to', None)
                 price_from_two = request_data.get('price_from_2', None)
@@ -297,6 +306,11 @@ def search_engine_full_details():
                 query = query.filter(Posts.is_active == is_active)
                 query = query.filter(Posts.mahal.in_(allowed_mahals))
                 print(allowed_type_ids)
+
+                if post_id is not None:
+                    query = query.filter(Posts.id == post_id)
+                if phone_number is not None:
+                    query = query.filter(Posts.number == phone_number)
 
                 if allowed_type_ids:
                     query = query.filter(Posts.type.in_(allowed_type_ids))
