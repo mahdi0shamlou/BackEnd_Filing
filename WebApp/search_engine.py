@@ -231,7 +231,7 @@ def search_engine_less_details():
                     'mahal': post.mahal_text,
                     'meter': post.meter,
                     'token': post.token,
-                    'desck': post.desck[:30],
+                    'desck': post.desck,
                     'date_created': post.date_created
                 } for post in posts]
 
