@@ -68,6 +68,7 @@ class DatabaseManager:
         #----------------------------
         #---------- Creates files table
         # ----------------------------
+        
         #ALTER TABLE Posts ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT TURE AFTER status;
         create_table_query = """
         CREATE TABLE IF NOT EXISTS Posts (
