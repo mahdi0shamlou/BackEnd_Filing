@@ -260,7 +260,7 @@ class DatabaseManager:
                 id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
                 user_id_created BIGINT(20) UNSIGNED NOT NULL,
                 file_id_created BIGINT(20) UNSIGNED NOT NULL,
-                zoonkan_id_in BIGINT(20) UNSIGNED NOT NULL,
+                zoonkan_id_in BIGINT(20) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP NULL DEFAULT NULL,
                 FOREIGN KEY (user_id_created) REFERENCES users(id) ON DELETE CASCADE,
