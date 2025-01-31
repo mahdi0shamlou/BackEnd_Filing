@@ -57,10 +57,7 @@ def get_factors():
 
     try:
         # پیدا کردن فاکتورهای مربوط به کاربر فعلی
-        factors = Factor.query.filter_by(user_id=user.id).all()
-        
-        # Add ordering by id in descending order
-        factors = factors.order_by(Factor.id.desc())
+        factors = Factor.query.filter_by(user_id=user.id).order_by(Factor.id.desc()).all()
 
         # تبدیل فاکتورها به فرمت جیسون
         factors_list = [{
