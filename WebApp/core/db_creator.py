@@ -73,7 +73,7 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS Posts (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             status INT NOT NULL,
-            is_active BOOLEAN NOT NULL DEFAULT TURE;
+            is_active BOOLEAN NOT NULL DEFAULT TRUE;
             token VARCHAR(191) NOT NULL UNIQUE,
             number VARCHAR(191) NOT NULL,
             city  BIGINT(3) NOT NULL,

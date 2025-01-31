@@ -5,3 +5,5 @@ flask_sqlalchemy
 kavenegar
 flask_caching
 flask-cors
+suds
+redis
