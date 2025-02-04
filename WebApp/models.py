@@ -59,6 +59,16 @@ class Posts(db.Model):
     BALCONY = db.Column(db.Boolean, default=False)
     # dict data
     details = db.Column(db.Text)
+    # data
+    floor = db.Column(db.Integer)
+    dwelling_units_per_floor = db.Column(db.Integer)
+    dwelling_unit_floor = db.Column(db.Integer)
+    wc = db.Column(db.String(191))
+    floor_type = db.Column(db.String(191))
+    water_provider = db.Column(db.String(191))
+    cool = db.Column(db.String(191))
+    heat = db.Column(db.String(191))
+    building_directions = db.Column(db.String(191))
     # date
     date_created_persian = db.Column(db.String(20))
     date_created = db.Column(db.DateTime, default= datetime.now())  # Use datetime.utcnow for default value
