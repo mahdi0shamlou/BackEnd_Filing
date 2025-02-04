@@ -317,15 +317,15 @@ def pardakht_factors(factor_id):
                         db.session.commit()
 
                 flash('پرداخت شما با موفقیت انجام شد !')  # Flash a message
-                return redirect("http://185.190.39.252/dashbord/factors/payment-success")
+                return redirect("http://185.190.39.252/dashboard/factors/payment-success")
 
             else:
                 flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
-                return redirect("http://185.190.39.252/dashbord/factors/payment-fail")
+                return redirect("http://185.190.39.252/dashboard/factors/payment-fail")
         else:
 
             flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
-            return redirect("http://185.190.39.252/dashbord/factors/payment-fail")
+            return redirect("http://185.190.39.252/dashboard/factors/payment-fail")
 
 
 
