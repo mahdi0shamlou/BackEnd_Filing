@@ -60,9 +60,9 @@ class Posts(db.Model):
     # dict data
     details = db.Column(db.Text)
     # data
-    floor = db.Column(db.Integer)
-    dwelling_units_per_floor = db.Column(db.Integer)
-    dwelling_unit_floor = db.Column(db.Integer)
+    floor = db.Column(db.String(191))
+    dwelling_units_per_floor = db.Column(db.String(191))
+    dwelling_unit_floor = db.Column(db.String(191))
     wc = db.Column(db.String(191))
     floor_type = db.Column(db.String(191))
     water_provider = db.Column(db.String(191))
