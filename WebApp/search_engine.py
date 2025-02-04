@@ -393,6 +393,15 @@ def search_engine_full_details():
                     'token': query.token,
                     'desck': query.desck,
                     'details': query.details,
+                    'floor': query.floor,
+                    'dwelling_units_per_floor': query.dwelling_units_per_floor,
+                    'dwelling_unit_floor': query.dwelling_unit_floor,
+                    'wc': query.wc,
+                    'floor_type': query.floor_type,
+                    'water_provider': query.water_provider,
+                    'cool': query.cool,
+                    'heat': query.heat,
+                    'building_directions': query.building_directions,
                     'date_created_persian':query.date_created_persian,
                     'date_created': query.date_created
                 } for query in posts]
