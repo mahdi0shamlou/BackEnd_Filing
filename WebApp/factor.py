@@ -317,25 +317,22 @@ def pardakht_factors(factor_id):
                         db.session.commit()
 
                 flash('پرداخت شما با موفقیت انجام شد !')  # Flash a message
-                return "پرداخت شد درست"
-                return redirect("https://arkafile.org")
+                return redirect("http://185.190.39.252/dashbord/factors/payment-success")
 
             else:
                 flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
-                return "ارور"
-                return redirect("https://arkafile.org")
+                return redirect("http://185.190.39.252/dashbord/factors/payment-fail")
         else:
 
             flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
-            return "ارور"
-            return redirect("https://arkafile.org")
+            return redirect("http://185.190.39.252/dashbord/factors/payment-fail")
 
 
 
     except Exception as e:
         print(str(e))  # برای دیباگ
         flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
-        return redirect("https://arkafile.org")
+        return redirect("http://185.190.39.252/dashbord/factors/payment-fail")
 
 
 """
