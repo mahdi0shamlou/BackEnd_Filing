@@ -675,7 +675,7 @@ def full_details_first_page():
         if auth_header == user.jwt_token:
 
             # بررسی دسترسی کاربر و دریافت محله‌های مجاز
-            has_access, allowed_mahals, allowed_type_ids = user_acsses_for_first_pages(user, request)
+            has_access, allowed_mahals, allowed_type_ids = user_acsses_for_first_pages(user)
             if not has_access:
                 return jsonify({"message": "شما اشتراک فعالی ندارید !"}), 403
             page = request_data.get('page', 1)
