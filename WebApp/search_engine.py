@@ -630,7 +630,117 @@ def users_access_class_new():
 # First page serach requests
 #-------------------------------------
 
+def user_acsses_for_first_pages(user):
+    try:
+
+        access = UserAccess.query.filter_by(
+            user_id=user.id,
+        ).all()
+
+        if not access:
+            return False, [], []
+
+        # دریافت تمام type های مجاز برای این classification
+        allowed_types = (db.session.query(ClassificationTypes.type)
+                         .filter(ClassificationTypes.classifiction_id == access[0].id)
+                         .all())
+
+        allowed_type_ids = [t[0] for t in allowed_types]
+
+
+        # دریافت محله‌های مجاز
+        allowed_neighborhoods = (db.session.query(Neighborhood.id)
+                                 .join(ClassificationNeighborhood)
+                                 .filter(ClassificationNeighborhood.classifiction_id == access[0].id)
+                                 .all())
+
+        allowed_neighborhood_ids = [n[0] for n in allowed_neighborhoods]
+
+        return True, allowed_neighborhood_ids, allowed_type_ids
+
+    except Exception as e:
+        print(f"Error in check_user_has_accses: {str(e)}")
+        return False, [], []
+
 @searchenign_bp.route('/Search/FullDetails/FirstPage', methods=['POST'])
 @jwt_required()
 def full_details_first_page():
-    pass
+    try:
+        request_data = request.get_json()
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+        user = Users.query.filter_by(phone=user_phone).first()
+        auth_header = request.headers.get('Authorization', None)
+        auth_header = auth_header.split(" ")[1]
+        if auth_header == user.jwt_token:
+
+            # بررسی دسترسی کاربر و دریافت محله‌های مجاز
+            has_access, allowed_mahals, allowed_type_ids = user_acsses_for_first_pages(user, request)
+            if not has_access:
+                return jsonify({"message": "شما اشتراک فعالی ندارید !"}), 403
+            page = request_data.get('page', 1)
+
+            query = Posts.query.filter(Posts.status == 1)
+            query = query.filter(Posts.type.in_(allowed_type_ids))
+            query = query.filter(Posts.mahal.in_(allowed_mahals))
+            per_page = 12
+
+            posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
+                                                                        error_out=False)
+
+            posts = posts_pagination.items
+
+            # Build a list of post details to send in the response
+            posts_list = [{
+                'id': query.id,
+                'title': query.title,
+                'Images': query.Images,
+                'city': query.city_text,
+                'type': query.type_text,
+                '_type': str(query.type)[0],
+                'price': query.price,
+                'price_two': query.price_two,
+                'PARKING': query.PARKING,
+                'CABINET': query.CABINET,
+                'ELEVATOR': query.ELEVATOR,
+                'BALCONY': query.BALCONY,
+                'Otagh': query.Otagh,
+                'Make_years': query.Make_years,
+                'phone': query.number,
+                'mahal': query.mahal_text,
+                'meter': query.meter,
+                'token': query.token,
+                'desck': query.desck,
+                'details': query.details,
+                'floor': query.floor,
+                'dwelling_units_per_floor': query.dwelling_units_per_floor,
+                'dwelling_unit_floor': query.dwelling_unit_floor,
+                'wc': query.wc,
+                'floor_type': query.floor_type,
+                'water_provider': query.water_provider,
+                'cool': query.cool,
+                'heat': query.heat,
+                'building_directions': query.building_directions,
+                'date_created_persian': query.date_created_persian,
+                'date_created': query.date_created
+            } for query in posts]
+
+            response_data = {
+                'posts': posts_list,
+                'pagination': {
+                    'current_page': page,
+                    'next_page': page + 1 if posts_pagination.has_next else None,
+                    'previous_page': page - 1 if posts_pagination.has_prev else None,
+                    'per_page': per_page,
+                    'total_posts': posts_pagination.total
+                }
+            }
+
+            return jsonify(response_data)
+
+        else:
+            return jsonify(
+                {'error': 'An error occurred', 'message': "شما احتمالا با چند دیوایس مختلف وارد شده اید !"}), 500
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
