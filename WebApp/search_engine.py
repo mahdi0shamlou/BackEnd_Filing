@@ -630,11 +630,6 @@ def users_access_class_new():
 # First page serach requests
 #-------------------------------------
 
-@searchenign_bp.route('/Search/LessDetails/FirstPage', methods=['POST'])
-@jwt_required()
-def less_details_first_page():
-    pass
-
 @searchenign_bp.route('/Search/FullDetails/FirstPage', methods=['POST'])
 @jwt_required()
 def full_details_first_page():
