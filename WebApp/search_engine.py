@@ -300,6 +300,8 @@ def search_engine_full_details():
                 make_from = request_data.get('make_from', None)
                 make_to = request_data.get('make_two', None)
                 desck = request_data.get('desck', None)
+                date_start = request_data.get('date_start', None)
+                date_end = request_data.get('date_end', None)
 
 
                 query = Posts.query.filter(Posts.status == 1)
