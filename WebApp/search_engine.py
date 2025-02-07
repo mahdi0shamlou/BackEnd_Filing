@@ -1,4 +1,5 @@
 from flask import request
+from datetime import datetime
 #-------------jwt tokens
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, make_response
@@ -160,6 +161,8 @@ def search_engine_less_details():
                 make_from = request_data.get('make_from', None)
                 make_to = request_data.get('make_two', None)
                 desck = request_data.get('desck', None)
+                date_start = request_data.get('date_start', None)
+                date_end = request_data.get('date_end', None)
 
 
                 query = Posts.query.filter(Posts.status == 1)
@@ -221,6 +224,13 @@ def search_engine_less_details():
                         Posts.desck.ilike(f'%{desck}%'),
                         Posts.title.ilike(f'%{desck}%')
                     ))
+
+                if date_start is not None:
+                    query = query.filter(Posts.date_created >= datetime.strptime(date_start, '%Y-%m-%d'))
+
+                if date_end is not None:
+                    query = query.filter(Posts.date_created <= datetime.strptime(date_end, '%Y-%m-%d'))
+
 
                 per_page = 12
 
@@ -364,6 +374,12 @@ def search_engine_full_details():
                         Posts.desck.ilike(f'%{desck}%'),
                         Posts.title.ilike(f'%{desck}%')
                     ))
+
+                if date_start is not None:
+                    query = query.filter(Posts.date_created >= datetime.strptime(date_start, '%Y-%m-%d'))
+
+                if date_end is not None:
+                    query = query.filter(Posts.date_created <= datetime.strptime(date_end, '%Y-%m-%d'))
 
                 per_page = 12
 
