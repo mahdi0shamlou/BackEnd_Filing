@@ -1,4 +1,5 @@
 from flask import request, Blueprint, jsonify
+import json
 #-------------jwt tokens
 from flask_jwt_extended import jwt_required, get_jwt_identity
 #-------------
@@ -39,6 +40,50 @@ def check_user_has_accses(user, mahal_id, type_id):
     else:
         return False
 
+def details_map(map: str):
+    response_data = {}
+    try:
+        sanitized_map_string = map.replace("'", '"')
+
+        map_data = json.loads(sanitized_map_string)  # Parse JSON from the text column
+
+        widgets = map_data.get('widgets')
+        if widgets and isinstance(widgets, list) and len(widgets) > 0:
+            first_widget = widgets[0]
+            if isinstance(first_widget, dict) and first_widget.get('widget_type') == 'MAP_ROW':
+                data = first_widget.get('data')
+                if isinstance(data, dict):
+                    location = data.get('location')
+                    if isinstance(location, dict) and location.get('type') == 'FUZZY':
+                        fuzzy_data = location.get('fuzzy_data')
+                        if isinstance(fuzzy_data, dict):
+                            point = fuzzy_data.get('point')
+                            if isinstance(point, dict):
+                                response_data['latitude'] = point.get('latitude')
+                                response_data['longitude'] = point.get('longitude')
+                            else:
+                                response_data['latitude'] = None
+                                response_data['longitude'] = None
+                        else:
+                            response_data['latitude'] = None
+                            response_data['longitude'] = None
+                    else:
+                        response_data['latitude'] = None
+                        response_data['longitude'] = None
+                else:
+                    response_data['latitude'] = None
+                    response_data['longitude'] = None
+            else:
+                response_data['latitude'] = None
+                response_data['longitude'] = None
+        else:
+            response_data['latitude'] = None
+            response_data['longitude'] = None
+    except (KeyError, AttributeError, TypeError, json.JSONDecodeError) as e:
+        print(f"Error extracting coordinates: {e}")
+        response_data['latitude'] = None
+        response_data['longitude'] = None
+    return response_data
 
 @details_bp.route('/Details', methods=['POST'])
 @jwt_required()
@@ -88,6 +133,7 @@ def details_file():
                         'water_provider': query.water_provider,
                         'cool': query.cool,
                         'heat': query.heat,
+                        'map': details_map(query.map) if query.map else False,
                         'building_directions': query.building_directions,
                         'date_created_persian':query.date_created_persian,
                         'date_created': query.date_created
