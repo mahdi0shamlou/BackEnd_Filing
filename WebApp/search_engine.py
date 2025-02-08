@@ -769,6 +769,8 @@ def full_details_first_page():
 # --- map
 #-------------------------
 
+import json
+
 @searchenign_bp.route('/Search/FullDetails/Map/<int:post_id>', methods=['POST'])
 @jwt_required()
 def full_details_map_lat_lang(post_id):
@@ -799,7 +801,9 @@ def full_details_map_lat_lang(post_id):
 
             if query.map:
                 try:
-                    map_data = query.map
+                    # Parse the JSON string from the database
+                    map_data = json.loads(query.map)  # Parse JSON from the text column
+
                     # Safely access nested dictionaries
                     widgets = map_data.get('widgets')
                     if widgets and isinstance(widgets, list) and len(widgets) > 0:
@@ -835,7 +839,7 @@ def full_details_map_lat_lang(post_id):
                     else:
                         response_data['latitude'] = None
                         response_data['longitude'] = None
-                except (KeyError, AttributeError, TypeError) as e:
+                except (KeyError, AttributeError, TypeError, json.JSONDecodeError) as e:
                     print(f"Error extracting coordinates: {e}")
                     response_data['latitude'] = None
                     response_data['longitude'] = None
