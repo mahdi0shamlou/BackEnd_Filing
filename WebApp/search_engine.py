@@ -763,3 +763,92 @@ def full_details_first_page():
     except Exception as e:
         print(e)
         return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
+
+
+#-------------------------
+# --- map
+#-------------------------
+
+@searchenign_bp.route('/Search/FullDetails/Map/<int:post_id>', methods=['POST'])
+@jwt_required()
+def full_details_map_lat_lang(post_id):
+    try:
+        request_data = request.get_json()
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+        user = Users.query.filter_by(phone=user_phone).first()
+        auth_header = request.headers.get('Authorization', None)
+        if not auth_header:
+            return jsonify({'error': 'Authorization header is missing'}), 401
+        auth_header = auth_header.split(" ")[1]
+        if auth_header == user.jwt_token:
+            """
+            # بررسی دسترسی کاربر و دریافت محله‌های مجاز
+            has_access, allowed_mahals, allowed_type_ids = user_acsses_for_first_pages(user)
+            if not has_access:
+                return jsonify({"message": "شما اشتراک فعالی ندارید !"}), 403
+            """
+            class_x = request_data.get('class', 1)
+
+            query = Posts.query.filter(Posts.id == post_id).first()
+
+            if query is None:
+                return jsonify({'message': 'Post not found'}), 404
+
+            response_data = {}
+
+            if query.map:
+                try:
+                    map_data = query.map
+                    # Safely access nested dictionaries
+                    widgets = map_data.get('widgets')
+                    if widgets and isinstance(widgets, list) and len(widgets) > 0:
+                        first_widget = widgets[0]
+                        if isinstance(first_widget, dict) and first_widget.get('widget_type') == 'MAP_ROW':
+                            data = first_widget.get('data')
+                            if isinstance(data, dict):
+                                location = data.get('location')
+                                if isinstance(location, dict) and location.get('type') == 'FUZZY':
+                                    fuzzy_data = location.get('fuzzy_data')
+                                    if isinstance(fuzzy_data, dict):
+                                        point = fuzzy_data.get('point')
+                                        if isinstance(point, dict):
+                                            latitude = point.get('latitude')
+                                            longitude = point.get('longitude')
+                                            response_data['latitude'] = latitude
+                                            response_data['longitude'] = longitude
+                                        else:
+                                            response_data['latitude'] = None
+                                            response_data['longitude'] = None
+                                    else:
+                                        response_data['latitude'] = None
+                                        response_data['longitude'] = None
+                                else:
+                                    response_data['latitude'] = None
+                                    response_data['longitude'] = None
+                            else:
+                                response_data['latitude'] = None
+                                response_data['longitude'] = None
+                        else:
+                            response_data['latitude'] = None
+                            response_data['longitude'] = None
+                    else:
+                        response_data['latitude'] = None
+                        response_data['longitude'] = None
+                except (KeyError, AttributeError, TypeError) as e:
+                    print(f"Error extracting coordinates: {e}")
+                    response_data['latitude'] = None
+                    response_data['longitude'] = None
+            else:
+                response_data['latitude'] = None
+                response_data['longitude'] = None
+
+            return jsonify(response_data)
+
+        else:
+            return jsonify(
+                {'error': 'An error occurred', 'message': "شما احتمالا با چند دیوایس مختلف وارد شده اید !"}), 500
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
+
