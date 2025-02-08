@@ -419,6 +419,7 @@ def search_engine_full_details():
                     'water_provider': query.water_provider,
                     'cool': query.cool,
                     'heat': query.heat,
+                    '_map': True if query.map else False,
                     'building_directions': query.building_directions,
                     'date_created_persian':query.date_created_persian,
                     'date_created': query.date_created
