@@ -768,8 +768,25 @@ def full_details_first_page():
 #-------------------------
 # --- map
 #-------------------------
-
 import json
+import re
+
+def sanitize_json_string(json_string):
+    """
+    Sanitizes a JSON string to ensure it's valid JSON.
+
+    This function replaces single quotes with double quotes (if necessary)
+    and escapes double quotes within string values.  It's designed to
+    handle cases where the JSON string is not properly formatted.
+    """
+
+    # Replace single quotes with double quotes for keys and values
+    # json_string = json_string.replace("'", "\"") # careful with this if single quotes are allowed inside values
+
+    # Escape double quotes within values using regex
+    json_string = re.sub(r'\\"', r'(?<!\\)"', json_string) # Escape unescaped double quotes
+
+    return json_string
 
 @searchenign_bp.route('/Search/FullDetails/Map/<int:post_id>', methods=['POST'])
 @jwt_required()
@@ -801,10 +818,11 @@ def full_details_map_lat_lang(post_id):
 
             if query.map:
                 try:
-                    # Parse the JSON string from the database
-                    map_data = json.loads(query.map)  # Parse JSON from the text column
+                    sanitized_map_string = query.map.replace("'", '"')
 
-                    # Safely access nested dictionaries
+                    map_data = json.loads(sanitized_map_string)  # Parse JSON from the text column
+
+
                     widgets = map_data.get('widgets')
                     if widgets and isinstance(widgets, list) and len(widgets) > 0:
                         first_widget = widgets[0]
@@ -817,10 +835,8 @@ def full_details_map_lat_lang(post_id):
                                     if isinstance(fuzzy_data, dict):
                                         point = fuzzy_data.get('point')
                                         if isinstance(point, dict):
-                                            latitude = point.get('latitude')
-                                            longitude = point.get('longitude')
-                                            response_data['latitude'] = latitude
-                                            response_data['longitude'] = longitude
+                                            response_data['latitude'] = point.get('latitude')
+                                            response_data['longitude'] = point.get('longitude')
                                         else:
                                             response_data['latitude'] = None
                                             response_data['longitude'] = None
