@@ -267,13 +267,13 @@ def search_engine_less_details():
                 return jsonify(response_data)
             except Exception as e:
                 print(e)  # Log the error
-                return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
+                return jsonify({'error': 'An error occurred', 'message': "error"}), 500
         else:
             return jsonify({'error': 'An error occurred', 'message': "شما احتمالا با چند دیوایس مختلف وارد شده اید !"}), 500
 
     except Exception as e:
         print(e)
-        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
+        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': "error"}), 500
 
 #-------------------------------------
 # telegram view
@@ -440,12 +440,12 @@ def search_engine_full_details():
                 return jsonify(response_data)
             except Exception as e:
                 print(e)  # Log the error
-                return jsonify({'error': 'An error occurred', 'message': str(e)}), 500
+                return jsonify({'error': 'An error occurred', 'message': "error"}), 500
         else:
             return jsonify({'error': 'An error occurred', 'message': "شما احتمالا با چند دیوایس مختلف وارد شده اید !"}), 500
     except Exception as e:
         print(e)
-        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
+        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': "error"}), 500
 
 #-------------------------------------
 # mahal requests
@@ -492,7 +492,7 @@ def users_access():
     except Exception as e:
         return make_response(jsonify({
             'status': 'error',
-            'message': str(e)
+            'message': "error"
         }), 500)
 
 
@@ -642,7 +642,7 @@ def users_access_class_new():
     except Exception as e:
         return jsonify({
             'status': 'error',
-            'message': str(e)
+            'message': "error"
         }), 500
 
 #-------------------------------------
@@ -762,7 +762,7 @@ def full_details_first_page():
                 {'error': 'An error occurred', 'message': "شما احتمالا با چند دیوایس مختلف وارد شده اید !"}), 500
     except Exception as e:
         print(e)
-        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
+        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': "error"}), 500
 
 
 #-------------------------
@@ -852,5 +852,5 @@ def full_details_map_lat_lang(post_id):
                 {'error': 'An error occurred', 'message': "شما احتمالا با چند دیوایس مختلف وارد شده اید !"}), 500
     except Exception as e:
         print(e)
-        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
+        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': "error"}), 500
 

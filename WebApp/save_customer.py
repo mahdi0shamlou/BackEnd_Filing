@@ -47,7 +47,7 @@ def save_customer():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": "An error occurred", "message": str(e)}), 500
+        return jsonify({"error": "An error occurred", "message": "error"}), 500
 
 @savecustomer_bp.route('/Customer/Edit/<int:id>', methods=['POST'])
 @jwt_required()
@@ -88,7 +88,7 @@ def edit_customer(id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": "An error occurred", "message": str(e)}), 500
+        return jsonify({"error": "An error occurred", "message": "error"}), 500
 
 @savecustomer_bp.route('/Customer/Delete/<int:id>', methods=['DELETE'])
 @jwt_required()
@@ -118,7 +118,7 @@ def delete_customer(id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": "An error occurred", "message": str(e)}), 500
+        return jsonify({"error": "An error occurred", "message": "error"}), 500
 
 @savecustomer_bp.route('/Customer/List', methods=['GET'])
 @jwt_required()
@@ -152,4 +152,4 @@ def list_customers():
         return jsonify({"customers": customer_list}), 200
 
     except Exception as e:
-        return jsonify({"error": "An error occurred", "message": str(e)}), 500
+        return jsonify({"error": "An error occurred", "message": "error"}), 500

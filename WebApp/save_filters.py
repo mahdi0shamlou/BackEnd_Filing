@@ -39,7 +39,7 @@ def save_search_filter():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": "An error occurred", "message": str(e)}), 500
+        return jsonify({"error": "An error occurred", "message": "error"}), 500
 
 
 @savefilter_bp.route('/Search/GetFilters', methods=['GET'])
@@ -70,7 +70,7 @@ def get_search_filters():
         return jsonify({"filters": filters_list}), 200
 
     except Exception as e:
-        return jsonify({"error": "An error occurred", "message": str(e)}), 500
+        return jsonify({"error": "An error occurred", "message": "error"}), 500
 
 
 # ------------- Delete Filter Route
@@ -99,7 +99,7 @@ def delete_search_filter(filter_id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": "An error occurred", "message": str(e)}), 500
+        return jsonify({"error": "An error occurred", "message": "error"}), 500
 
 
 # ------------- Update Filter Route
@@ -140,4 +140,4 @@ def update_search_filter(filter_id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": "An error occurred", "message": str(e)}), 500
+        return jsonify({"error": "An error occurred", "message": "error"}), 500

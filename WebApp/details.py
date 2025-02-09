@@ -147,13 +147,13 @@ def details_file():
                     return jsonify(response_data)
                 except Exception as e:
                     print(e)  # Log the error
-                    return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره تلاش کنید !', 'message': str(e)}), 500
+                    return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره تلاش کنید !', 'message': 'error'}), 500
             else:
                 return jsonify({"message": "شما به این فایل دسترسی ندارید ."}), 403
         else:
             return jsonify({'error': 'An error occurred', 'message': "شما احتمالا با چند دیوایس مختلف وارد شده اید !"}), 500
     except Exception as e:
         print(e)
-        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': str(e)}), 500
+        return jsonify({'error': 'مشکلی پیش اومده لطفا دوباره امتحان کنید !', 'message': 'error'}), 500
 
 

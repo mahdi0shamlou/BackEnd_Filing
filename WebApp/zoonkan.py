@@ -309,7 +309,7 @@ def get_zoonkan_files(zoonkan_id):
 
         return jsonify(response_data)
     except Exception as e:
-        return jsonify({"message": f"{e}"}), 500
+        return jsonify({"message": f"error"}), 500
 
 
 @zoonkan_bp.route('/ZoonKan/Delete/<int:zoonkan_id>', methods=['DELETE'])
