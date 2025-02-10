@@ -593,3 +593,59 @@ def remove_user_manage_factors_user_access(user_id, factor_id):
         db.session.rollback()  # اگر خطایی رخ داد، تغییرات را برگردان
         print(str(e))  # برای دیباگ و شناسایی خطا
         return jsonify({"message": "خطای سرور. با پشتیبانی تماس بگیرید"}), 500
+
+
+#----------------------------
+#-------------- details for craete factors
+#----------------------------
+@factors_bp.route('/Factors/Details', methods=['GET'])
+@jwt_required()
+def factors_details_for_creations():
+    try:
+        # Get the current user information from the JWT token
+        current_user = get_jwt_identity()
+        user_phone = current_user['phone']
+
+        # Find the current user in the database
+        user = Users.query.filter_by(phone=user_phone).first()
+        if not user:
+            return jsonify({"message": "کاربر جاری یافت نشد"}), 404
+
+        # Query all data from the NumberProfitForFactor table
+        number_profit_data = NumberProfitForFactor.query.all()
+
+        # Serialize the NumberProfitForFactor data
+        number_profit_list = [
+            {
+                "id": item.id,
+                "number_person": item.number_person,
+                "profit": item.profit
+            }
+            for item in number_profit_data
+        ]
+
+        # Query all data from the DaysProfitForFactor table
+        days_profit_data = DaysProfitForFactor.query.all()
+
+        # Serialize the DaysProfitForFactor data
+        days_profit_list = [
+            {
+                "id": item.id,
+                "days": item.days,
+                "profit": item.profit
+            }
+            for item in days_profit_data
+        ]
+
+        # Combine the results into a single response
+        response_data = {
+            "number_profit_data": number_profit_list,
+            "days_profit_data": days_profit_list
+        }
+
+        return jsonify(response_data), 200
+
+    except Exception as e:
+        # Log the exception for debugging purposes (optional)
+        print(f"Error: {e}")
+        return jsonify({"message": "خطای سرور. با پشتیبانی تماس بگیرید"}), 500
