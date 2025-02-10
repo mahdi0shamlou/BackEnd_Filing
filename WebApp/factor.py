@@ -234,7 +234,7 @@ def do_factors(factor_id):
         email = user.email  # Optional
         mobile = user.phone # Optional
         client = Client(ZARINPAL_WEBSERVICE)
-        print(f'5.34.195.27/Factors/did/{factor.id}')
+
         callback_url = url_for('factor.pardakht_factors', factor_id=factor.id, _external=True)
 
         result = client.service.PaymentRequest(MMERCHANT_ID,
@@ -317,22 +317,22 @@ def pardakht_factors(factor_id):
                         db.session.commit()
 
                 flash('پرداخت شما با موفقیت انجام شد !')  # Flash a message
-                return redirect("http://185.190.39.252/dashboard/factors/payment-success")
+                return redirect("https://arkafile.info/dashboard/factors/payment-success")
 
             else:
                 flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
-                return redirect("http://185.190.39.252/dashboard/factors/payment-fail")
+                return redirect("https://arkafile.info/dashboard/factors/payment-fail")
         else:
 
             flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
-            return redirect("http://185.190.39.252/dashboard/factors/payment-fail")
+            return redirect("https://arkafile.info/dashboard/factors/payment-fail")
 
 
 
     except Exception as e:
         print(str(e))  # برای دیباگ
         flash('پرداخت شما با مشکل رو به رو شد !')  # Flash a message
-        return redirect("http://185.190.39.252/dashbord/factors/payment-fail")
+        return redirect("https://arkafile.info/dashbord/factors/payment-fail")
 
 
 """
