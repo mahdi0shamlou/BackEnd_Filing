@@ -715,7 +715,7 @@ def create_factor_free():
 
             db.session.add(new_factor)
             db.session.commit()
-            for i in classifications_for_factors:
+            for i in [classifications_for_factors]:
                 new_factor_accses = FactorAccess(
                     user_id=user.id,
                     factor_id=new_factor.id,
