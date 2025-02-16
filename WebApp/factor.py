@@ -702,9 +702,6 @@ def create_factor_free():
             # محاسبه تاریخ جدید با اضافه کردن time_delta به زمان فعلی
             new_date = now + timedelta(days=time_delta)
 
-            # اعتبارسنجی مقدماتی
-            if not all([factor_type]):
-                return jsonify({"message": "تمام فیلدهای مورد نظر را وارد کنید!"}), 400
 
             # ایجاد فاکتور جدید
             new_factor = Factor(
@@ -726,7 +723,7 @@ def create_factor_free():
                     expired_at=new_date
                 )
                 db.session.add(new_factor_accses)
-            db.session.commit()
+
 
 
             factor_acsess = FactorAccess.query.filter_by(factor_id=new_factor.id).all()
@@ -753,8 +750,14 @@ def create_factor_free():
                     db.session.add(new_user_acsses)
                     db.session.commit()
 
-
-
+            db.session.commit()
+            new_user_acsses = FreeFactors(
+                cluster=classifications_for_factors,
+                user_id=user.id,
+                expired_at=new_factor.expired_at
+            )
+            db.session.add(new_user_acsses)
+            db.session.commit()
             return jsonify({
                 "message": "فاکتور با موفقیت ایجاد شد",
                 "factor": {
