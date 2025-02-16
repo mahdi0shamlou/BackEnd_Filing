@@ -163,12 +163,21 @@ def search_engine_less_details():
                 desck = request_data.get('desck', None)
                 date_start = request_data.get('date_start', None)
                 date_end = request_data.get('date_end', None)
+                is_complete = request_data.get('is_complete', None)
+                address = request_data.get('address', None)
+                malk_name = request_data.get('malk_name', None)
 
 
                 query = Posts.query.filter(Posts.status == 1)
                 query = query.filter(Posts.is_active == is_active)
                 query = query.filter(Posts.mahal.in_(allowed_mahals))
                 print(allowed_type_ids)
+
+                if is_complete is not None:
+                    if is_complete == 1:
+                        query = query.filter(Posts.is_complete == True)
+                    else:
+                        query = query.filter(Posts.is_complete == False)
 
                 if post_id is not None:
                     query = query.filter(Posts.id == post_id)
@@ -231,7 +240,13 @@ def search_engine_less_details():
                 if date_end is not None:
                     query = query.filter(Posts.date_created <= datetime.strptime(date_end, '%Y-%m-%d'))
 
+                if malk_name is not None:
+                    query = query.filter(Posts.malk_name.ilike(f'%{malk_name}%'))
 
+                if address is not None:
+                    query = query.filter(Posts.address.ilike(f'%{address}%'))
+
+                    
                 per_page = 12
 
                 posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
