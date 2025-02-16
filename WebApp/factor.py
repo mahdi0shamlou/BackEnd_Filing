@@ -775,6 +775,6 @@ def create_factor_free():
             db.session.rollback()
 
             print(str(e))  # برای دیباگ
-            return jsonify({"message": "خطا در ایجاد فاکتور"}), 500
+            return jsonify({"message": "خطا در ایجاد فاکتور", 'E' : str(e)}), 500
     else:
         return jsonify({"error": "فاکتور رایگان شما قبلا فعال شده است"}), 403
