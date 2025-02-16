@@ -723,7 +723,7 @@ def create_factor_free():
                     expired_at=new_date
                 )
                 db.session.add(new_factor_accses)
-
+            db.session.commit()
 
 
             factor_acsess = FactorAccess.query.filter_by(factor_id=new_factor.id).all()
@@ -750,7 +750,7 @@ def create_factor_free():
                     db.session.add(new_user_acsses)
                     db.session.commit()
 
-            db.session.commit()
+
             new_user_acsses = FreeFactors(
                 cluster=classifications_for_factors,
                 user_id=user.id,
@@ -775,6 +775,6 @@ def create_factor_free():
             db.session.rollback()
 
             print(str(e))  # برای دیباگ
-            return jsonify({"message": "خطا در ایجاد فاکتور", 'E' : str(e)}), 500
+            return jsonify({"message": "خطا در ایجاد فاکتور"}), 500
     else:
         return jsonify({"error": "فاکتور رایگان شما قبلا فعال شده است"}), 403
