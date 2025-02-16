@@ -246,7 +246,7 @@ def search_engine_less_details():
                 if address is not None:
                     query = query.filter(Posts.address.ilike(f'%{address}%'))
 
-                    
+
                 per_page = 12
 
                 posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,

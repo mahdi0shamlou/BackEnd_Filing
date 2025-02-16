@@ -61,7 +61,7 @@ class Posts(db.Model):
     # dict data
     details = db.Column(db.Text)
     address = db.Column(db.Text)
-    malk_name = db.Column(db.String(191), nullable=False)
+    malk_name = db.Column(db.String(191))
     # data
     floor = db.Column(db.String(191))
     dwelling_units_per_floor = db.Column(db.String(191))
