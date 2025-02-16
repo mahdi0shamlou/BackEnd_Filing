@@ -84,7 +84,7 @@ def code_checker_login():
             response_checker = code_cheker(phone, code)
             if response_checker:
 
-                expires = datetime.timedelta(days=2)
+                expires = datetime.timedelta(days=30)
                 access_token = create_access_token(identity={"phone": user.phone}, expires_delta=expires)
                 user.jwt_token = access_token
                 db.session.commit()
