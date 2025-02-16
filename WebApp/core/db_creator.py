@@ -70,6 +70,7 @@ class DatabaseManager:
         # ----------------------------
 
         #ALTER TABLE Posts ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT TURE AFTER status;
+        #ALTER TABLE Posts ADD COLUMN malk_name VARCHAR(191)
         create_table_query = """
         CREATE TABLE IF NOT EXISTS Posts (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -91,6 +92,9 @@ class DatabaseManager:
             map TEXT,
             Images TEXT,
             details TEXT,
+            address TEXT,
+            malk_name VARCHAR(191),
+            is_complete BOOLEAN NOT NULL DEFAULT FALSE,
             Otagh TINYINT UNSIGNED,
             Make_years BIGINT(5),
             PARKING BOOLEAN DEFAULT FALSE,

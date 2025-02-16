@@ -135,6 +135,9 @@ def details_file():
                         'heat': query.heat,
                         'map': details_map(query.map) if query.map else False,
                         'building_directions': query.building_directions,
+                        'is_complete': query.is_complete,
+                        'malk_name': query.malk_name,
+                        'address': query.address,
                         'date_created_persian':query.date_created_persian,
                         'date_created': query.date_created
                     }]
