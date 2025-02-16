@@ -276,3 +276,11 @@ class DaysProfitForFactor(db.Model):
     days = db.Column(db.Integer, nullable=False)
     profit = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
+
+class FreeFactors(db.Model):
+    __tablename__ = 'Free_Factor'
+
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    cluster = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now())
+    expired_at = db.Column(db.DateTime, nullable=False)

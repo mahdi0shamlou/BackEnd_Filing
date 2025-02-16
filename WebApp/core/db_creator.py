@@ -514,6 +514,17 @@ class DatabaseManager:
         self.cursor.execute(create_table_query)
         self.connection.commit()
 
+        create_table_query = """
+                CREATE TABLE Free_Factor (
+                        id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                        cluster INT NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        expired_at TIMESTAMP NOT NULL
+                )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        self.cursor.execute(create_table_query)
+        self.connection.commit()
+
     def close(self):
         self.cursor.close()
         self.connection.close()
