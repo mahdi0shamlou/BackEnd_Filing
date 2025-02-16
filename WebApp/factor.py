@@ -695,7 +695,7 @@ def create_factor_free():
             # واکشی و اعتبارسنجی اطلاعات فاکتور
             factor_type = 1
             number = 1
-            classifications_for_factors = data.get('classifications_for_factors', 1)
+            classifications_for_factors = data.get('classifications_for_factors', 2)
             time_delta = 3
 
             now = datetime.now()
