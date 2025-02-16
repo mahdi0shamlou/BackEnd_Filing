@@ -282,5 +282,6 @@ class FreeFactors(db.Model):
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     cluster = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
     expired_at = db.Column(db.DateTime, nullable=False)

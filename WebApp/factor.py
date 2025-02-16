@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import users as Users
 from models import UserAccess
 from models import db, Pardakht
-from models import Factor
+from models import Factor, FreeFactors
 from models import Classifictions_FOR_Factors, NumberProfitForFactor, DaysProfitForFactor
 from models import FactorAccess
 from models import PER_Classifictions_FOR_Factors, Users_in_Factors_Acsess
@@ -649,3 +649,129 @@ def factors_details_for_creations():
         # Log the exception for debugging purposes (optional)
         print(f"Error: {e}")
         return jsonify({"message": "خطای سرور. با پشتیبانی تماس بگیرید"}), 500
+
+#--------------------------------------
+# Free Factor
+#--------------------------------------
+@factors_bp.route('/Factors/Free/Status', methods=['GET'])
+@jwt_required()
+def free_factor_status():
+    # دریافت اطلاعات کاربر فعلی از توکن JWT
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    # پیدا کردن کاربر در دیتابیس
+    user = Users.query.filter_by(phone=user_phone).first()
+
+    try:
+        free_factors = FreeFactors.query.filter_by(user_id=user.id).first()
+        if not free_factors:
+            return jsonify({"factors_free": True}), 200
+        else:
+            return jsonify({"factors_free": False}), 200
+    except Exception as e:
+        print(str(e))  # برای دیباگ
+        return jsonify({"message": "خطا در دریافت فاکتورها"}), 500
+
+
+@factors_bp.route('/Factors/Free/Create', methods=['POST'])
+@jwt_required()
+def create_factor_free():
+    # دریافت اطلاعات کاربر فعلی از توکن JWT
+    current_user = get_jwt_identity()
+    user_phone = current_user['phone']
+
+    # پیدا کردن کاربر در دیتابیس
+    user = Users.query.filter_by(phone=user_phone).first()
+
+    free_factors = FreeFactors.query.filter_by(user_id=user.id).first()
+    # دریافت داده‌های ارسالی
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"message": "داده‌ای دریافت نشد!"}), 400
+    if not free_factors:
+        try:
+            # واکشی و اعتبارسنجی اطلاعات فاکتور
+            factor_type = 1
+            number = 1
+            classifications_for_factors = data.get('classifications_for_factors', 1)
+            time_delta = 3
+
+            now = datetime.now()
+            # محاسبه تاریخ جدید با اضافه کردن time_delta به زمان فعلی
+            new_date = now + timedelta(days=time_delta)
+
+            # اعتبارسنجی مقدماتی
+            if not all([factor_type]):
+                return jsonify({"message": "تمام فیلدهای مورد نظر را وارد کنید!"}), 400
+
+            # ایجاد فاکتور جدید
+            new_factor = Factor(
+                user_id=user.id,
+                status=1,
+                type=factor_type,
+                number=number,
+                price=0,
+                expired_at=new_date
+            )
+
+            db.session.add(new_factor)
+            db.session.commit()
+            for i in classifications_for_factors:
+                new_factor_accses = FactorAccess(
+                    user_id=user.id,
+                    factor_id=new_factor.id,
+                    classifictions_for_factors_id=i,
+                    expired_at=new_date
+                )
+                db.session.add(new_factor_accses)
+            db.session.commit()
+
+
+            factor_acsess = FactorAccess.query.filter_by(factor_id=new_factor.id).all()
+            for factor_acsess_one in factor_acsess:
+                Users_in_Factors_Acsess_new = Users_in_Factors_Acsess(
+                    user_id=user.id,
+                    factor_id=new_factor.id,
+                    Classifictions_id=factor_acsess_one.classifictions_for_factors_id,
+                    expired_at=new_factor.expired_at
+                )
+                db.session.add(Users_in_Factors_Acsess_new)
+
+                classifictions_for_factors_id = factor_acsess_one.classifictions_for_factors_id
+                classifictions_user_accsess = PER_Classifictions_FOR_Factors.query.filter_by(
+                    Classifictions_FOR_Factors_id_created=classifictions_for_factors_id).all()
+                for i in classifictions_user_accsess:
+                    print(i.Classifictions_id_created)
+                    new_user_acsses = UserAccess(
+                        factor_id=new_factor.id,
+                        user_id=user.id,
+                        classifictions_id=i.Classifictions_id_created,
+                        expired_at=new_factor.expired_at
+                    )
+                    db.session.add(new_user_acsses)
+                    db.session.commit()
+
+
+
+            return jsonify({
+                "message": "فاکتور با موفقیت ایجاد شد",
+                "factor": {
+                    "id": new_factor.id,
+                    "status": new_factor.status,
+                    "type": new_factor.type,
+                    "number": new_factor.number,
+                    "price": new_factor.price,
+                    "created_at": new_factor.created_at.isoformat(),
+                    "expired_at": new_factor.expired_at.isoformat()
+                }
+            }), 201
+
+        except Exception as e:
+            db.session.rollback()
+
+            print(str(e))  # برای دیباگ
+            return jsonify({"message": "خطا در ایجاد فاکتور"}), 500
+    else:
+        return jsonify({"error": "فاکتور رایگان شما قبلا فعال شده است"}), 403

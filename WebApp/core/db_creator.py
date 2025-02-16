@@ -518,6 +518,7 @@ class DatabaseManager:
                 CREATE TABLE Free_Factor (
                         id BIGINT PRIMARY KEY AUTO_INCREMENT,
                         cluster INT NOT NULL,
+                        user_id INT NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         expired_at TIMESTAMP NOT NULL
                 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
