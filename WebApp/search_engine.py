@@ -774,6 +774,9 @@ def full_details_first_page():
                 'cool': query.cool,
                 'heat': query.heat,
                 'building_directions': query.building_directions,
+                'is_complete': query.is_complete,
+                'malk_name': query.malk_name,
+                'address': query.address,
                 'date_created_persian': query.date_created_persian,
                 'date_created': query.date_created
             } for query in posts]
