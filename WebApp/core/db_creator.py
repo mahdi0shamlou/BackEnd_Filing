@@ -76,6 +76,7 @@ class DatabaseManager:
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             status INT NOT NULL,
             is_active BOOLEAN NOT NULL DEFAULT TRUE,
+            status_type INT,
             token VARCHAR(191) NOT NULL UNIQUE,
             number VARCHAR(191) NOT NULL,
             city  BIGINT(3) NOT NULL,
