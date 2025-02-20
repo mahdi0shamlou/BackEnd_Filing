@@ -705,7 +705,7 @@ def user_acsses_for_first_pages(user):
         # دریافت محله‌های مجاز
         allowed_neighborhoods = (db.session.query(Neighborhood.id)
                                  .join(ClassificationNeighborhood)
-                                 .filter(ClassificationNeighborhood.classifiction_id == access[0].classifiction_id)
+                                 .filter(ClassificationNeighborhood.classifiction_id == access[0].classifictions_id)
                                  .all())
 
         allowed_neighborhood_ids = [n[0] for n in allowed_neighborhoods]
