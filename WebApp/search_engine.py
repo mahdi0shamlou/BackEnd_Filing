@@ -689,7 +689,7 @@ def user_acsses_for_first_pages(user):
         access = UserAccess.query.filter_by(
             user_id=user.id,
         ).all()
-
+        print(access)
         if not access:
             return False, [], []
 
