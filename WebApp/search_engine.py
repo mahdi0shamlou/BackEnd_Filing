@@ -689,7 +689,7 @@ def user_acsses_for_first_pages(user):
         access = UserAccess.query.filter_by(
             user_id=user.id,
         ).all()
-        print(access)
+        
         if not access:
             return False, [], []
 
@@ -700,7 +700,7 @@ def user_acsses_for_first_pages(user):
 
 
         allowed_type_ids = [t[0] for t in allowed_types]
-        print(allowed_type_ids)
+
 
         # دریافت محله‌های مجاز
         allowed_neighborhoods = (db.session.query(Neighborhood.id)
@@ -709,7 +709,7 @@ def user_acsses_for_first_pages(user):
                                  .all())
 
         allowed_neighborhood_ids = [n[0] for n in allowed_neighborhoods]
-        print(allowed_neighborhood_ids)
+
         return True, allowed_neighborhood_ids, allowed_type_ids
 
     except Exception as e:
