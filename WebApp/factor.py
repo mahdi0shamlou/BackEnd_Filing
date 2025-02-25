@@ -502,7 +502,7 @@ def add_user_manage_factors_user_Acsses(factor_id, user_phone_should_add):
         if not factor or factor.status != 1:
             return jsonify({"message": "فاکتور مورد نظر یافت نشد"}), 404
 
-        query = Users_in_Factors_Acsess.query.filter(Users_in_Factors_Acsess.factor_id == factor_id).all()
+        query = Users_in_Factors_Acsess.query.filter(Users_in_Factors_Acsess.factor_id == factor_id).distinct().all()
 
         unique_users = []
         for access in query:
