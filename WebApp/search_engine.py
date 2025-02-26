@@ -692,12 +692,12 @@ def user_acsses_for_first_pages(user):
         
         if not access:
             return False, [], []
-
+        list_classification = [a.classifictions_id for a in access]
         # دریافت تمام type های مجاز برای این classification
         allowed_types = (db.session.query(ClassificationTypes.type)
-                         .filter(ClassificationTypes.classifiction_id == access[0].classifictions_id)
+                         .filter(ClassificationTypes.classifiction_id.in_(list_classification))
+                         .distinct()
                          .all())
-
 
         allowed_type_ids = [t[0] for t in allowed_types]
 
@@ -705,7 +705,8 @@ def user_acsses_for_first_pages(user):
         # دریافت محله‌های مجاز
         allowed_neighborhoods = (db.session.query(Neighborhood.id)
                                  .join(ClassificationNeighborhood)
-                                 .filter(ClassificationNeighborhood.classifiction_id == access[0].classifictions_id)
+                                 .filter(ClassificationNeighborhood.classifiction_id.in_(list_classification))
+                                 .distinct()
                                  .all())
 
         allowed_neighborhood_ids = [n[0] for n in allowed_neighborhoods]
