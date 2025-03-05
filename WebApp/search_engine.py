@@ -264,6 +264,7 @@ def search_engine_less_details():
                     'meter': post.meter,
                     'token': post.token,
                     'desck': post.desck,
+                    'is_active': query.is_active,
                     'date_created': post.date_created
                 } for post in posts]
 
@@ -455,6 +456,7 @@ def search_engine_full_details():
                     'is_complete': query.is_complete,
                     'malk_name': query.malk_name,
                     'address': query.address,
+                    'is_active': query.is_active,
                     'date_created_persian':query.date_created_persian,
                     'date_created': query.date_created
                 } for query in posts]
@@ -779,6 +781,7 @@ def full_details_first_page():
                 'is_complete': query.is_complete,
                 'malk_name': query.malk_name,
                 'address': query.address,
+                'is_active': query.is_active,
                 'date_created_persian': query.date_created_persian,
                 'date_created': query.date_created
             } for query in posts]
