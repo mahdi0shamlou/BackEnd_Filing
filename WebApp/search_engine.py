@@ -743,7 +743,7 @@ def full_details_first_page():
             per_page = 12
 
             posts_pagination = query.order_by(Posts.date_created.desc()).paginate(page=page, per_page=per_page,
-                                                                        error_out=False)
+                                                                        error_out=True)
 
             posts = posts_pagination.items
 
