@@ -298,6 +298,7 @@ def search_engine_less_details():
 @jwt_required()
 def search_engine_full_details():
     try:
+        print('User is Here !')
         request_data = request.get_json()
         current_user = get_jwt_identity()
         user_phone = current_user['phone']
@@ -415,9 +416,9 @@ def search_engine_full_details():
 
                 per_page = 12
 
-
+                print('User is Here befor paginagations!')
                 posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
-                                                                                       error_out=False)
+                                                                                       error_out=True)
 
                 posts = posts_pagination.items
 
