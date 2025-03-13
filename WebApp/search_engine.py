@@ -463,7 +463,7 @@ def search_engine_full_details():
                     'date_created_persian':query.date_created_persian,
                     'date_created': query.date_created
                 } for query in posts]
-
+                print(posts_list)
                 response_data = {
                     'posts': posts_list,
                     'pagination': {
