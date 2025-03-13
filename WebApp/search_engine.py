@@ -335,6 +335,7 @@ def search_engine_full_details():
 
 
                 query = Posts.query.filter(Posts.status == 1)
+                print(query)
                 query = query.filter(Posts.is_active == is_active)
                 query = query.filter(Posts.mahal.in_(allowed_mahals))
                 print(allowed_type_ids)
