@@ -249,7 +249,7 @@ def search_engine_less_details():
 
                 per_page = 12
 
-                posts_pagination = query.order_by(Posts.date_created.desc()).paginate(page=page, per_page=per_page,
+                posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
                                                                             error_out=False)
 
                 posts = posts_pagination.items
@@ -416,7 +416,7 @@ def search_engine_full_details():
                 per_page = 12
 
 
-                posts_pagination = query.order_by(Posts.date_created.desc()).paginate(page=page, per_page=per_page,
+                posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
                                                                                        error_out=False)
 
                 posts = posts_pagination.items
@@ -742,7 +742,7 @@ def full_details_first_page():
             query = query.filter(Posts.mahal.in_(allowed_mahals))
             per_page = 12
 
-            posts_pagination = query.order_by(Posts.date_created.desc()).paginate(page=page, per_page=per_page,
+            posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
                                                                         error_out=True)
 
             posts = posts_pagination.items
