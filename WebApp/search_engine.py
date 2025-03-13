@@ -335,7 +335,7 @@ def search_engine_full_details():
 
 
                 query = Posts.query.filter(Posts.status == 1)
-                print(query)
+
                 query = query.filter(Posts.is_active == is_active)
                 query = query.filter(Posts.mahal.in_(allowed_mahals))
                 print(allowed_type_ids)
@@ -416,7 +416,7 @@ def search_engine_full_details():
                     query = query.filter(Posts.address.ilike(f'%{address}%'))
 
                 per_page = 12
-
+                print(len(query.all()))
                 print('User is Here befor paginagations!')
                 posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
                                                                                        error_out=True)
