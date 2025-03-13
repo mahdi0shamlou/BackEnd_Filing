@@ -419,7 +419,7 @@ def search_engine_full_details():
                 print('User is Here befor paginagations!')
                 posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
                                                                                        error_out=True)
-
+                print('User is Here after paginagations!')
                 posts = posts_pagination.items
 
                 # Build a list of post details to send in the response
