@@ -421,7 +421,7 @@ def search_engine_full_details():
                                                                                        error_out=True)
                 print('User is Here after paginagations!')
                 posts = posts_pagination.items
-
+                print(posts)
                 # Build a list of post details to send in the response
                 posts_list = [{
                     'id': query.id,
