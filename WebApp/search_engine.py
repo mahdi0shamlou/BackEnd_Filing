@@ -298,7 +298,7 @@ def search_engine_less_details():
 @jwt_required()
 def search_engine_full_details():
     try:
-        print('User is Here !')
+
         request_data = request.get_json()
         current_user = get_jwt_identity()
         user_phone = current_user['phone']
@@ -338,7 +338,7 @@ def search_engine_full_details():
 
                 query = query.filter(Posts.is_active == is_active)
                 query = query.filter(Posts.mahal.in_(allowed_mahals))
-                print(allowed_type_ids)
+
 
                 if is_complete is not None:
                     if is_complete == 1:
@@ -416,14 +416,12 @@ def search_engine_full_details():
                     query = query.filter(Posts.address.ilike(f'%{address}%'))
 
                 per_page = 12
-                print("****************"*2)
-                print(len(query.all()))
-                print('User is Here befor paginagations!')
+
                 posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
-                                                                                       error_out=True)
-                print('User is Here after paginagations!')
+                                                                                       error_out=False)
+
                 posts = posts_pagination.items
-                print(posts)
+
                 # Build a list of post details to send in the response
                 posts_list = [{
                     'id': query.id,
@@ -463,7 +461,7 @@ def search_engine_full_details():
                     'date_created_persian':query.date_created_persian,
                     'date_created': query.date_created
                 } for query in posts]
-                print(posts_list)
+
                 response_data = {
                     'posts': posts_list,
                     'pagination': {
