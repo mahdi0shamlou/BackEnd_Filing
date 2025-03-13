@@ -416,6 +416,7 @@ def search_engine_full_details():
                     query = query.filter(Posts.address.ilike(f'%{address}%'))
 
                 per_page = 12
+                print("****************"*2)
                 print(len(query.all()))
                 print('User is Here befor paginagations!')
                 posts_pagination = query.order_by(Posts.id.desc()).paginate(page=page, per_page=per_page,
