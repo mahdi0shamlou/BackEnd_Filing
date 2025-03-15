@@ -257,8 +257,8 @@ def get_zoonkan_files(zoonkan_id):
 
         # دریافت پارامترهای صفحه‌بندی
         page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 10, type=int)
-
+        #per_page = request.args.get('per_page', 10, type=int)
+        per_page = 1000
         # کوئری فایل‌های زونکن با جوین Posts
         query = db.session.query(FilesInZoonKan, Posts).join(Posts, FilesInZoonKan.file_id_created == Posts.id).filter(FilesInZoonKan.zoonkan_id_in == zoonkan_id)
 
